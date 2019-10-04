@@ -7,7 +7,13 @@
     function Line(url) {
         this._url = url;
 
+        this._view = "";
+        this._collection = "";
+        this._what = "";
+        this._error;
+        this._data;
         // member properties
+        
     };
     window.Line = Line;
 })(window);
@@ -51,6 +57,52 @@ Line.prototype.__callApi = function(_calltype, _callurl, cb) {
             }
     });
 }
+
+
+/**
+ * execution of serlook api query
+ */
+Line.prototype.post = async function(object) {
+    let self = this;
+
+    let lineApi = self._url + self._collection + self._what;
+
+    console.log("=== url --->", lineApi);
+    console.log("=== object --->", object);
+
+    
+    await $.ajax({
+        crossDomain: true,
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(object),
+        url: lineApi,
+        success: function(data){
+                console.log("=== return with success -->", data);
+                if(data.success == true) {
+                    self._data = data;
+                }else {
+                    if(data.code === 'tokenNotValid') {
+                        data.res = 'invalid_token.session';
+                    }else if (data.code === 'authTokenNotSupplied') {
+                        data.res = 'no_token.session';
+                    }
+                    self._data = data;
+                }
+            },
+        error: function(data) {
+                console.log("=== return with error--->", data);
+                self._error = new Error('unknown what');               
+            },
+        beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + self.getJwt());
+                // TODO: remove cookies before sending
+            }
+        });
+
+    return self;       
+}
+
 
 Line.prototype.signOut = function(cb) {
     Cookies.remove('gIsLogin');
@@ -169,4 +221,110 @@ Line.prototype.redirect = function(redirect) {
             window.document.write(data);
         }
     });
+}
+
+
+Line.prototype.view = function(view) {
+    let self = this;
+    self._error = null;
+
+    switch(view) {
+        case 'create':
+            self._view = '/service/create';
+                break;
+        default :
+                self._error = new Error('unknown view request');
+    }
+    return self;
+}
+
+
+Line.prototype.getView = async function(param) {
+    let self = this;
+
+    // clear error
+    self._error = null;
+
+    let lineApi = self._url + self._view;
+
+    if(param) {
+        lineApi += "/" + param;
+    }
+    console.log("=== query: ", lineApi);
+
+    await $.ajax({
+        crossDomain: true,
+        type: "GET",
+        contentType: 'application/json; charset=utf-8',
+        url: lineApi,
+        success: function(data){
+                console.log("=== return with success -->", data);
+                if(data.success == true) {
+                    self._data = data;
+                }else {
+                    if(data.code === 'tokenNotValid') {
+                        data.res = 'invalid_token.session';
+                    }else if (data.code === 'authTokenNotSupplied') {
+                        data.res = 'no_token.session';
+                    }
+                    self._data = data;
+                }               
+            },
+        error: function(data) {
+                console.log("=== return with error--->", data);
+                self._error = new Error('unknown what');               
+            },
+        beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + self.getJwt());
+                // TODO: remove cookies before sending
+            }
+    });
+
+    return self;
+}
+
+/**
+ * returning the result of serlook api query
+ */
+Line.prototype.then = function(cb) {
+    let self = this;
+
+    if (self._data) {
+        cb(self._data);
+    }else {
+        return self;
+    }
+    return self;
+}
+
+/**
+ * Error handling of serlook api query
+ */
+Line.prototype.catch = function(cb) {
+    let self = this;
+
+    if (self._error) {
+        cb(self._error);
+    }
+}
+
+
+
+/**
+ * Collections for server requests
+ * 
+ */
+
+
+/**
+ * Actions on collections
+ * 
+ */
+Line.prototype.what = function(what) {
+    let self = this;
+    self._error = null;
+
+    self._what = "/" + what;
+ 
+    return self;
 }

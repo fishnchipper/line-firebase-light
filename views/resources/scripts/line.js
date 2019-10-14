@@ -104,6 +104,55 @@ Line.prototype.post = async function(object) {
 }
 
 
+
+Line.prototype.get = async function(param) {
+    let self = this;
+
+    // clear error
+    self._error = null;
+
+    let lineApi = self._url + self._collection + self._what;
+
+    if(param) {
+        lineApi += "/" + param;
+    }
+    console.log("=== query: ", lineApi);
+
+    await $.ajax({
+        crossDomain: true,
+        type: "GET",
+        contentType: 'application/json; charset=utf-8',
+        url: lineApi,
+        success: function(data){
+                console.log("=== return with success -->", data);
+                if(data.success == true) {
+                    self._data = data;
+                }else {
+                    if(data.code === 'tokenNotValid') {
+                        data.res = 'invalid_token.session';
+                    }else if (data.code === 'authTokenNotSupplied') {
+                        data.res = 'no_token.session';
+                    }
+                    self._data = data;
+                }
+                
+                
+            },
+        error: function(data) {
+                console.log("=== return with error--->", data);
+                self._error = new Error('unknown what');
+                
+            },
+        beforeSend: function(xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + self.getJwt());
+                // TODO: remove cookies before sending
+            }
+    });
+
+    return self;
+}
+
+
 Line.prototype.signOut = function(cb) {
     Cookies.remove('gIsLogin');
     Cookies.remove('gJwt');
@@ -227,14 +276,8 @@ Line.prototype.redirect = function(redirect) {
 Line.prototype.view = function(view) {
     let self = this;
     self._error = null;
+    self._view = '/service/' + view;
 
-    switch(view) {
-        case 'create':
-            self._view = '/service/create';
-                break;
-        default :
-                self._error = new Error('unknown view request');
-    }
     return self;
 }
 
@@ -314,17 +357,22 @@ Line.prototype.catch = function(cb) {
  * Collections for server requests
  * 
  */
+Line.prototype.collection = function(_collection) {
+    let self = this;
+    self._collection = "/api/" + _collection;
 
+    return self;
+}
 
 /**
  * Actions on collections
  * 
  */
-Line.prototype.what = function(what) {
+Line.prototype.what = function(_what) {
     let self = this;
     self._error = null;
 
-    self._what = "/" + what;
+    self._what = "/" + _what;
  
     return self;
 }

@@ -16,7 +16,8 @@ let middleware = require('./middleware/check-token');
  * routes
  */
 let routeMain = require('./routes/rt-main');
-let routeView = require('./routes/rt-views/rt-view');
+let routeView = require('./routes/rt-view/rt-view');
+let routeApi = require('./routes/rt-api/rt-api');
 
 
 
@@ -49,7 +50,7 @@ app.use('/service', middleware.checkToken, routeView.router);
 
 
 // add RESTful APIs below
-
+app.use('/api', middleware.checkToken, routeApi.router);
 
 
 // end session for other request with erro message return

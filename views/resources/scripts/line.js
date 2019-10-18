@@ -333,6 +333,13 @@ Line.prototype.then = function(cb) {
     let self = this;
 
     if (self._data) {
+        // session check 
+        if(self._data.code == 'tokenNotValid') {
+            self.signOut(() => {
+                $(location).attr('href', self._url + '/sign-in');
+            });
+        }
+        // session ok, move on.
         cb(self._data);
     }else {
         return self;

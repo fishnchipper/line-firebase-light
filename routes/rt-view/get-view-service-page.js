@@ -6,7 +6,7 @@ function getViewServicePage(req, res, next) {
     
     let values = '';
 
-    res.render('./services/page', values, function(err, html) {
+    res.render('./service/page', values, function(err, html) {
         if(err) {
             console.log(err);
             res.status(err.status).end();

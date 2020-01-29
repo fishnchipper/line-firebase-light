@@ -1,7 +1,7 @@
 # Line
 
 
-NodeJS Express App shell @ Network Service | NTT (Australia)
+NodeJS + Express App shell
 
 
 # How to duplicate this repository for your project

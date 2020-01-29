@@ -24,7 +24,7 @@ let routeApi = require('./routes/rt-api/rt-api');
 let app = express()
 const APPNAME = "line"
 const PORT = 30999
-const VERSION = '0.1.0.0'
+const VERSION = '0.1.0'
 
 // for security purpose
 app.use(helmet());

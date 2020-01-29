@@ -1,7 +1,9 @@
+
+
 # Line
 
 
-NodeJS Express App shell @ Network Service | NTT (Australia)
+NodeJS + Express App shell
 
 
 # How to duplicate this repository for your project
@@ -19,7 +21,7 @@ NodeJS Express App shell @ Network Service | NTT (Australia)
 let app = express()
 const APPNAME = "line"
 const PORT = 30999
-const VERSION = '0.1.0.0'
+const VERSION = '0.1.0'
 ```
 
 - /views/resources/scripts/environment.js
@@ -53,7 +55,7 @@ $ npm install
 3. Run the app
 ```
 $ node index.js
-==> line - (v0.1.0.0) listening on port 30999!
+==> line - (v0.1.0) listening on port 30999!
 ```
 
 4. Open a webbrowser and connect https://localhost:30999

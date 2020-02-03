@@ -20,7 +20,6 @@ router.get('/page', getViewServicePage.on);
 
 
 
-
 // close session 
 router.use(function(req, res) {
     res.json({error:'IncorrectAPI'});

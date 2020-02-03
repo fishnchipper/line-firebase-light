@@ -2,13 +2,14 @@
 
 
 
-function LineSignInUI(redirect) {
+function LineSignInUI(redirect, auth) {
 
-    this._line = new Line(line.url);
+    this._line = new Line(auth);
     this._redirect = redirect;
     this._spinner = new Spinner();
 
     this.isSignIn();
+    this.signInWithGoogle();
     this.signInWithEmailPass();
 };
 
@@ -21,6 +22,40 @@ LineSignInUI.prototype.isSignIn = function() {
     if(self._line.isSignIn() && self._line.getJwt()) {
         self._line.redirect(self._redirect);
     }
+}
+
+LineSignInUI.prototype.signInWithGoogle = function() {
+    let self = this;
+    let signinGoogleButton = $("#sl-signin-google-btn");
+    signinGoogleButton.click(function(e) {
+        e.preventDefault();
+        console.log("--- google signin clicked",  self._firebase.auth);
+
+        var provider = new self._firebase.auth.GoogleAuthProvider();
+        self._firebase.auth().signInWithPopup(provider).then(function(result) {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            var token = result.credential.accessToken;
+            // The signed-in user info.
+            var user = result.user;
+            // ...
+            console.log("--- signed-in result from firebase sdk: ", result);
+            console.log("--- google credential: ", result.credential);
+            console.log("--- signed-in user detail: ", user);
+            self._firebase.auth().currentUser.getIdToken(true).then(function(idToken){
+                console.log("--- signed-in user idToken: ", idToken);
+            });
+
+          }).catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // The email of the user's account used.
+            var email = error.email;
+            // The firebase.auth.AuthCredential type that was used.
+            var credential = error.credential;
+            // ...
+          });
+    });
 }
 
 LineSignInUI.prototype.signInWithEmailPass = function() {

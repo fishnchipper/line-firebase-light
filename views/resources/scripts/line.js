@@ -4,8 +4,9 @@
 
 (function( window ) {
     'use strict';
-    function Line(url) {
-        this._url = url;
+    function Line(auth) {
+        this._url = line.url;
+        this._auth = auth;
 
         this._view = "";
         this._collection = "";

@@ -10,7 +10,7 @@ function ServiceUI() {
     this._user = '';
 
     // member functions
-    this.isSignIn();
+    //this.isSignIn();
     this.signOut();
     this.init();
 };

@@ -8,10 +8,8 @@
 */
 function main(req, res, next) {
 
-   let values = '';
-
-   // display status of sign in
-   res.render('./main', values, function(err, html) {
+   // display main page
+   res.render('./main', '', function(err, html) {
        if(err) {
            console.log(err);
            res.status(err.status).end();
@@ -21,26 +19,6 @@ function main(req, res, next) {
        }
    });
 }
-
-
-/**
-* Sign In page 
-*/
-function signIn(req, res, next) {
-
-    let values = '';
- 
-    // display status of sign in
-    res.render('./sign-in', values, function(err, html) {
-        if(err) {
-            console.log(err);
-            res.status(err.status).end();
-        }else {
-            res.set('Content-Type', 'text/html');
-            res.send(html);
-        }
-    });
- }
 
 
 function end(req, res) {
@@ -59,5 +37,4 @@ function end(req, res) {
 
 
 module.exports.main = main;
-module.exports.signIn = signIn;
 module.exports.endSession = end;

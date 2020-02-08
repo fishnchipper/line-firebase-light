@@ -66,5 +66,3 @@ $ node index.js
 # What line does for you
 
 
-# Coding Style
-[Google Style Guides](https://google.github.io/styleguide/jsguide.html)

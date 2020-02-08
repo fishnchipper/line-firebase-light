@@ -16,6 +16,7 @@ let middleware = require('./middleware/check-token');
  * routes
  */
 let routeMain = require('./routes/rt-main');
+let routeUser = require('./routes/rt-user/rt-user');
 let routeView = require('./routes/rt-view/rt-view');
 let routeApi = require('./routes/rt-api/rt-api');
 
@@ -39,12 +40,14 @@ app.use('/', express.static(path.join(__dirname + '/views')));
 
 // main page
 app.get('/', routeMain.main);
-app.get('/sign-in', routeMain.signIn);
+
+// user auth
+app.use('/user', routeUser.router);
 
 // view pages
 app.use('/service', middleware.checkToken, routeView.router);
 
-// add APIs below
+// add RESTFul APIs below
 app.use('/api', middleware.checkToken, routeApi.router);
 
 // end session for other request with erro message return

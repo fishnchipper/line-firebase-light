@@ -1,3 +1,6 @@
+# firebase private key
+environment/*.json
+
 # nodejs
 node_modules
 

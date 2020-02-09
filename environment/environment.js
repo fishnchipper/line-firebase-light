@@ -3,10 +3,9 @@
  * environments
  */
 
-const ale = {
-    url: 'https://io.ntt.net.au:30555'
-    //url: 'https://localhost:30525'
+const firebase = {
+    keyFilename: __dirname + '/line-serverkey.json'
 };
 
-module.exports.ale = ale;
+module.exports.firebase = firebase;
 

@@ -1,13 +1,14 @@
-# << this is uncompleted codes...
+# << uncompleted codes...
+
 
 # Line
 
+Line is a NodeJS + Express App shell which can be used for web front application or microservice with RESTful API interfaces. 
 
-NodeJS + Express App shell
 
+## User Authentication
+- Google Firebase admin SDK is used but can be replaced by any 3rd-party authentication service or your own implmentation.
 
-# How to duplicate this repository for your project
-- see https://help.github.com/en/articles/duplicating-a-repository
 
 
 
@@ -63,6 +64,6 @@ $ node index.js
 
 
 
-# What line does for you
-
+# How to duplicate this repository for your project
+- see https://help.github.com/en/articles/duplicating-a-repository
 

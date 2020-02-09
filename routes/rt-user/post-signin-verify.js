@@ -1,11 +1,39 @@
 
+
+// init firebase admin
 let admin = require('firebase-admin');
-let serviceAccount = require("../../environment/line-7e593-firebase-adminsdk-o2cuu-f35d7e3d3f.json");
+let environment = require('../../environment/environment');
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(environment.firebase.keyFilename),
   databaseURL: "https://line-7e593.firebaseio.com"
 });
 
+// for access to firestore
+const Firestore = require('@google-cloud/firestore');
+
+
+function __getUser(__uid) {
+  let user = null;
+  const firestore = new Firestore(environment.firebase);
+  let query = firestore.collection('users').where('__uid','==', __uid);
+
+  query.get().then(querySnapshot => {
+      if (querySnapshot.empty) {
+          console.log('No uid found in line');
+          return user;
+      }else {
+          /*let docs = querySnapshot.docs;*/
+          querySnapshot.forEach(doc => {
+            user = doc;
+          });          
+          return user             
+      }
+  })
+  .catch(err => {
+    console.log('Error - query user', err);
+    return null;
+  });
+}
 
 function on(req, res, next) {
     
@@ -22,19 +50,30 @@ function on(req, res, next) {
     if (typeof decodedToken.email !== 'undefined' &&
         typeof decodedToken.email_verified !== 'undefined' &&
         decodedToken.email_verified) {
-      // Add custom claims for additional privileges.
-      admin.auth().setCustomUserClaims(decodedToken.sub, {
-        role: 'admin'
-      })
-      .then(() => {
-        // Tell client to refresh token on user.
-        res.end(JSON.stringify({
-            status: 'success'
+
+        // check if the user is signed up.
+        const user = __getUser(decodedToken.user_id);
+        if(!user) {
+          // Tell client to redirect to sign up page.
+          res.end(JSON.stringify({
+            status: 'nosignup'
           }));
-        });
+        }else {
+        
+          // Add custom claims for additional privileges.
+          admin.auth().setCustomUserClaims(decodedToken.sub, {
+            role: user.role
+          })
+          .then(() => {
+            // Tell client to refresh token on user.
+            res.end(JSON.stringify({
+                status: 'success'
+              }));
+            });
+        }
     } else {
-      // Return nothing.
-      res.end(JSON.stringify({status: 'ineligible'}));
+        // Return nothing.
+        res.end(JSON.stringify({status: 'ineligible'}));
     }
   });
 }

@@ -6,6 +6,7 @@ let router = express.Router();
 
 let getViewSignin = require('./get-view-signin');
 let getViewSignup = require('./get-view-signup');
+let getViewSignupSocial = require('./get-view-signup-social');
 let postSigninVerify = require('./post-signin-verify')
 
 
@@ -18,6 +19,9 @@ router.get('/signin', getViewSignin.on);
 
 // get view: /signup  
 router.get('/signup', getViewSignup.on);
+
+// get view: /signup/social  
+router.get('/signup/social', getViewSignupSocial.on);
 
 
 /**

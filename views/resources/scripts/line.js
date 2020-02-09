@@ -5,6 +5,7 @@
 (function( window ) {
     'use strict';
     function Line(auth) {
+
         this._url = line.url;
         this._auth = auth;
 
@@ -195,6 +196,38 @@ Line.prototype.getUserInfo = function() {
 
 
 /**
+ * verify ID token returned from line web-end Google Authentication at line server-end
+ * - call {line url}/user/signin/verify
+ * 
+ * @param {object}      idToken ID token json object
+ * @param {function}    cd callback 
+ */
+Line.prototype.verifyIdToken = async function(idToken, cb) {
+
+    // Pass the ID token to the server.
+    let obj = { idToken: idToken };
+    console.log("=== idToken: ", obj);
+    await $.ajax({
+        crossDomain: true,
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(obj),
+        url: '/user/signin/verify',
+        success: function(data){
+                console.log("=== return with success -->", data);
+                cb(data);
+            },
+        error: function(data) {
+                console.log("=== return with error--->", data);   
+                data.status = 'fail';
+                cb(data);        
+            },
+        beforeSend: function(xhr) {
+            }
+    });
+}
+
+/**
  * sign in with email & password
  *
  * @param {object}      credential with username and password
@@ -252,6 +285,63 @@ Line.prototype.signinWithEmailPass = function(credential, redirect, cb) {
             }
     });
 }
+
+/**
+ * sign in with Google Firebase Authentication : Email/Password
+ * 
+ * @param {object}      credential with username and password
+ * @param {function}    cb callback
+ */
+Line.prototype.signInGoogleAuthEmailPass = function(credential, cd) {
+
+}
+
+/**
+ * sign in with Google Firebase Authentication : Google OAuth
+ * 
+ * @param {function}    cb callback
+ */
+Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
+    let self = this;
+    let provider = new self._auth.auth.GoogleAuthProvider();
+    self._auth.auth().signInWithPopup(provider)
+    .then((result) => {
+        // User is signed in. Get the ID token.
+        console.log("=== idToken: ", result.user.getIdToken());
+        return result.user.getIdToken();
+    })    
+    .then((idToken) => {
+        // verify ID token returned from Google Auth
+        self.verifyIdToken(idToken, (data) => {
+            const json = JSON.parse(data);
+            console.log("=== ", json);
+            if (json && json.status == 'success') {
+                // Force token refresh. The token claims will contain the additional claims.
+                self._auth.auth().currentUser.getIdToken(true);
+                self._auth.auth().currentUser.getIdTokenResult()
+                .then((idTokenResult) => {
+                    console.log("=== new idToken result: ", idTokenResult);
+                    __cb(idTokenResult.claims);
+                })
+                .catch((error) => {
+                    console.log("=== error: ", error);
+                    // Handle Errors here.
+                    var errorCode = error.code;
+                    var errorMessage = error.message;
+                    // The email of the user's account used.
+                    var email = error.email;
+                    // The firebase.auth.AuthCredential type that was used.
+                    var credential = error.credential;
+                    // ...
+                  });
+            }else {
+                __cb(json);
+            }
+        });
+    });
+}
+
+
 
 /**
  * redirect location with session data at the header

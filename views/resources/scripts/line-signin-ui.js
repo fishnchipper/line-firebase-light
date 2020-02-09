@@ -31,7 +31,10 @@ LineSignInUI.prototype.signInWithGoogleOAuth = function() {
         e.preventDefault();
         console.log("--- google signin clicked");
 
-        self._line.signInGoogleAuthGoogleOAuth(self._redirect, (claims)=> {
+        self._line.signInGoogleAuthGoogleOAuth((result) => {
+            if(result.status == "nosignup") {
+                self._line.redirect('/user/signup');
+            }
             console.log("--- ", claims.name, ' successfuly signed in with role:', claims.role);
         });
 

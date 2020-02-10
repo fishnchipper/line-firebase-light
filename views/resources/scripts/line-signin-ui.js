@@ -29,15 +29,41 @@ LineSignInUI.prototype.signInWithGoogleOAuth = function() {
     let signInGoogleButton = $("#sl-signin-google-btn");
     signInGoogleButton.click(function(e) {
         e.preventDefault();
+        self._spinner.spin($(".card-container").get(0));
         console.log("--- google signin clicked");
 
-        self._line.signInGoogleAuthGoogleOAuth((result) => {
-            if(result.status == "nosignup") {
-                self._line.redirect('/user/signup');
+        self._line.signInGoogleAuthGoogleOAuth((__result, __user) => {
+            self._spinner.stop();
+            if(__result.status == "signuprequired") {
+                console.log("--- hello ",__user.claims.name, '. You need to sign up.');
+                self.__signUpHelper(__user);
+            }else {
+                console.log("--- ", __user.claims.name, ' successfuly signed in with role:', __user.claims.role);
+                self._line.redirect('/service');
             }
-            console.log("--- ", claims.name, ' successfuly signed in with role:', claims.role);
         });
 
+    });
+}
+
+LineSignInUI.prototype.__signUpHelper = function(__user){
+
+    let signupHtml = `<div class="tab-content" id="myTabContent">
+                        
+                            <div class="tab-pane fade show active" role="tabpanel" style="margin-top: 3em;">
+                                <button id="line-signup-btn" class="btn btn-lg btn-secondary btn-block">Sign Up</button>
+                            </div>
+                            <p style="margin-top: 2em;"><a href="/" >Not this time</a></p>
+                        
+                      </div>`;
+    $("#line-title").html("Hello " + __user.claims.name);
+    $("#line-sub-title").html(`<p style="margin-top: 1em;">You are not with us yet. Please join!</p>`);
+    $("#line-user-image").attr("src", __user.claims.picture);
+    $("#line-sign-form").html(signupHtml);
+
+    $("#line-signup-btn").click((e) => {
+        e.preventDefault();
+        console.log("--- signup btn clicked");
     });
 }
 

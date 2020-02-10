@@ -56,7 +56,7 @@ function on(req, res, next) {
         if(!user) {
           // Tell client to redirect to sign up page.
           res.end(JSON.stringify({
-            status: 'nosignup'
+            status: 'signuprequired'
           }));
         }else {
         
@@ -67,7 +67,7 @@ function on(req, res, next) {
           .then(() => {
             // Tell client to refresh token on user.
             res.end(JSON.stringify({
-                status: 'success'
+                status: 'verified'
               }));
             });
         }

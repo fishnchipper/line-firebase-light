@@ -303,40 +303,42 @@ Line.prototype.signInGoogleAuthEmailPass = function(credential, cd) {
  */
 Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
     let self = this;
+    let currentUser = null;
     let provider = new self._auth.auth.GoogleAuthProvider();
     self._auth.auth().signInWithPopup(provider)
     .then((result) => {
         // User is signed in. Get the ID token.
-        console.log("=== idToken: ", result.user.getIdToken());
-        return result.user.getIdToken();
-    })    
-    .then((idToken) => {
-        // verify ID token returned from Google Auth
-        self.verifyIdToken(idToken, (data) => {
-            const json = JSON.parse(data);
-            console.log("=== ", json);
-            if (json && json.status == 'success') {
-                // Force token refresh. The token claims will contain the additional claims.
-                self._auth.auth().currentUser.getIdToken(true);
-                self._auth.auth().currentUser.getIdTokenResult()
-                .then((idTokenResult) => {
-                    console.log("=== new idToken result: ", idTokenResult);
-                    __cb(idTokenResult.claims);
-                })
-                .catch((error) => {
-                    console.log("=== error: ", error);
-                    // Handle Errors here.
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    // The email of the user's account used.
-                    var email = error.email;
-                    // The firebase.auth.AuthCredential type that was used.
-                    var credential = error.credential;
-                    // ...
-                  });
-            }else {
-                __cb(json);
-            }
+        result.user.getIdTokenResult()
+        .then((idTokenResult) => {
+            console.log("=== user trying sign-in: ", idTokenResult);
+            
+            // verify ID token returned from Google Auth
+            self.verifyIdToken(idTokenResult.token, (data) => {
+                const result = JSON.parse(data);
+                console.log("=== ", result);
+                if (result && result.status == 'verified') {
+                    // Force token refresh. The token claims will contain the additional claims.
+                    self._auth.auth().currentUser.getIdToken(true);
+                    self._auth.auth().currentUser.getIdTokenResult()
+                    .then((refreshedIdTokenResult) => {
+                        console.log("=== refreshed idToken result: ", refreshedIdTokenResult);
+                        __cb(result, refreshedIdTokenResult);
+                    })
+                    .catch((error) => {
+                        console.log("=== error: ", error);
+                        // Handle Errors here.
+                        var errorCode = error.code;
+                        var errorMessage = error.message;
+                        // The email of the user's account used.
+                        var email = error.email;
+                        // The firebase.auth.AuthCredential type that was used.
+                        var credential = error.credential;
+                        // ...
+                    });
+                }else if(result && result.status == 'signuprequired') {
+                    __cb(result, idTokenResult);
+                }
+            });
         });
     });
 }

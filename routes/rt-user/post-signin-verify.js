@@ -1,20 +1,7 @@
 
 
-// init firebase admin
-let admin = require('firebase-admin');
-let environment = require('../../environment/environment');
-admin.initializeApp({
-  credential: admin.credential.cert(environment.firebase.keyFilename),
-  databaseURL: "https://line-7e593.firebaseio.com"
-});
-
-// for access to firestore
-const Firestore = require('@google-cloud/firestore');
-
-
 function __getUser(__uid) {
   let user = null;
-  const firestore = new Firestore(environment.firebase);
   let query = firestore.collection('users').where('__uid','==', __uid);
 
   query.get().then(querySnapshot => {
@@ -43,7 +30,7 @@ function on(req, res, next) {
   console.log("==== idToken: ", idToken);
 
   // Verify the ID token and decode its payload.
-  admin.auth().verifyIdToken(idToken)
+  firebaseAdmin.auth().verifyIdToken(idToken)
   .then((decodedToken) => {
     console.log("==== customer claims: ", decodedToken);
     // Verify user is eligible for additional privileges.
@@ -61,7 +48,7 @@ function on(req, res, next) {
         }else {
         
           // Add custom claims for additional privileges.
-          admin.auth().setCustomUserClaims(decodedToken.sub, {
+          firebaseAdmin.auth().setCustomUserClaims(decodedToken.sub, {
             role: user.role
           })
           .then(() => {

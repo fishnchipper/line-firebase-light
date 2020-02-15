@@ -12,6 +12,23 @@ let https = require('https'),
 
 let middleware = require('./middleware/check-token');
 
+
+
+//
+// init firebase admin
+global.firebaseAdmin = require('firebase-admin');
+let environment = require('./environment/environment');
+firebaseAdmin.initializeApp({
+  credential: firebaseAdmin.credential.cert(environment.firebase.keyFilename),
+  databaseURL: "https://line-7e593.firebaseio.com"
+});
+
+// for access to firestore
+const Firestore = require('@google-cloud/firestore');
+global.firestore = new Firestore(environment.firebase);
+//
+
+
 /**
  * routes
  */
@@ -24,6 +41,7 @@ let app = express()
 const APPNAME = "line"
 const PORT = 65000
 const VERSION = '0.1.0'
+
 
 // for security purpose
 app.use(helmet());

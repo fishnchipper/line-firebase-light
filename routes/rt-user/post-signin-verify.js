@@ -1,6 +1,7 @@
-let firebaseHelper = require('../../line_modules/firebase/firebase-helper');
-let fbHelper = firebaseHelper.createFirebaseHelper();
 
+
+let line = require('../../line_modules/line');
+let dbAdapter = line.createDbAdapter();
 
 function on(req, res, next) {
     
@@ -9,7 +10,7 @@ function on(req, res, next) {
     console.log("==== idToken: ", idToken);
 
     // Verify the ID token and decode its payload.
-    fbHelper.verifyIdToken(idToken)
+    dbAdapter.verifyIdToken(idToken)
     .then((user) => {
       console.log("==== user: ", user);
       // Tell client to refresh token on user.

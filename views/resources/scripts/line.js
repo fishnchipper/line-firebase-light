@@ -343,7 +343,40 @@ Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
     });
 }
 
+Line.prototype.signUpWithSocial = async function(__provider, __userObj, cb) {
+    console.log("=== user ", __provider, " : ", __userObj);
+    const userObj = {
+        "signUpTime": Date.now(),
+        "lastSignInTime": Date.now(),
+        "name": __userObj.name,
+        "__uid": __userObj.user_id,
+        "email": __userObj.email,
+        "picture": __userObj.picture,
+        "authProvider": __provider
+    };
 
+    // Pass the ID token to the server.
+    let obj = { userObj: userObj };
+    console.log("=== userObj: ", obj);
+    await $.ajax({
+        crossDomain: true,
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(obj),
+        url: '/user/signup',
+        success: function(data){
+                console.log("=== return with success -->", data);
+                cb(data);
+            },
+        error: function(data) {
+                console.log("=== return with error--->", data);   
+                data.status = 'fail';
+                cb(data);        
+            },
+        beforeSend: function(xhr) {
+            }
+    });
+}
 
 /**
  * redirect location with session data at the header

@@ -12,21 +12,12 @@ let https = require('https'),
 
 let middleware = require('./middleware/check-token');
 
-
-
-//
-// init firebase admin
-global.firebaseAdmin = require('firebase-admin');
-let environment = require('./environment/environment');
-firebaseAdmin.initializeApp({
-  credential: firebaseAdmin.credential.cert(environment.firebase.keyFilename),
-  databaseURL: "https://line-7e593.firebaseio.com"
-});
-
-// for access to firestore
-const Firestore = require('@google-cloud/firestore');
-global.firestore = new Firestore(environment.firebase);
-//
+/**
+ * init db access
+ */
+let line = require('./line_modules/line');
+// use firebase as back-end db
+line.initDbAccess('firebase');
 
 
 /**
@@ -37,10 +28,10 @@ let routeUser = require('./routes/rt-user/rt-user');
 let routeView = require('./routes/rt-view/rt-view');
 let routeApi = require('./routes/rt-api/rt-api');
 
-let app = express()
-const APPNAME = "line"
-const PORT = 65000
-const VERSION = '0.1.0'
+let app = express();
+const APPNAME = "line";
+const PORT = 65000;
+const VERSION = '0.1.0';
 
 
 // for security purpose

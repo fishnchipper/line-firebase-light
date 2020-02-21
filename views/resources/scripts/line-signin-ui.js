@@ -47,12 +47,13 @@ LineSignInUI.prototype.signInWithGoogleOAuth = function() {
 }
 
 LineSignInUI.prototype.__signUpHelper = function(__user){
-
+    let self = this;
     let signupHtml = `<div class="tab-content" id="myTabContent">
                         
                             <div class="tab-pane fade show active" role="tabpanel" style="margin-top: 3em;">
                                 <button id="line-signup-btn" class="btn btn-lg btn-secondary btn-block">Sign Up</button>
                             </div>
+                            <p style="margin-top: 2em;">by clicking Sing Up button, you agree to <a href="">Line's Policy & Terms of Use</a></p>
                             <p style="margin-top: 2em;"><a href="/" >Not this time</a></p>
                         
                       </div>`;
@@ -64,6 +65,10 @@ LineSignInUI.prototype.__signUpHelper = function(__user){
     $("#line-signup-btn").click((e) => {
         e.preventDefault();
         console.log("--- signup btn clicked");
+        self._line.signUpWithSocial("google", __user.claims, ()=> {
+            console.log("--- signup successful");
+            
+        });
     });
 }
 

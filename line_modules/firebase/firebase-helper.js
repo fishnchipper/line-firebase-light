@@ -18,7 +18,7 @@ let FirebaseHelper = (function() {
         let self = this;
 
         return new Promise((resolve, reject) => {
-          firebaseAdmin.auth().verifyIdToken(__idToken)
+          ___firebaseAdmin___.auth().verifyIdToken(__idToken)
           .then((decodedToken) => {
             console.log("+++ customer claims: ", decodedToken);
             // Verify user is eligible for additional privileges.
@@ -50,7 +50,7 @@ let FirebaseHelper = (function() {
      */
     FirebaseHelper.prototype.getUser = function(__uid) {
 
-      let query = firestore.collection('users').where('__uid','==', __uid);
+      let query = ___firestore___.collection('users').where('__uid','==', __uid);
 
       return new Promise((resolve, reject) => {
 
@@ -71,6 +71,27 @@ let FirebaseHelper = (function() {
                 console.log('Error - query user', err);
                 reject("error - during firebase query");
               });
+
+            })
+    }
+
+    /**
+     * add a user in firebase
+     * 
+     * @param {object} __user The __user to add.
+     * @return {Promise<string>} A promise fulfilled with status; otherwise, a rejected promise
+     */
+    FirebaseHelper.prototype.setUser = function(__user) {
+
+      return new Promise((resolve, reject) => {
+                // query data in firebase
+                ___firestore___.collection("users").doc(`${__user.__uid}`).set(__user).then(() => {
+                  resolve("success");                 
+                })
+                .catch(err => {
+                  console.log('Error', err);
+                  reject("error - during firebase set");
+                });
 
             })
     }

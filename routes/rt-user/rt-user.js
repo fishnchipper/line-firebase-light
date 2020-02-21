@@ -5,9 +5,8 @@ let router = express.Router();
 
 
 let getViewSignin = require('./get-view-signin');
-let getViewSignup = require('./get-view-signup');
-let getViewSignupSocial = require('./get-view-signup-social');
 let postSigninVerify = require('./post-signin-verify')
+let postSignup = require('./post-signup');
 
 
 /**
@@ -17,12 +16,6 @@ let postSigninVerify = require('./post-signin-verify')
 // get view: /signin 
 router.get('/signin', getViewSignin.on);
 
-// get view: /signup  
-router.get('/signup', getViewSignup.on);
-
-// get view: /signup/social  
-router.get('/signup/social', getViewSignupSocial.on);
-
 
 /**
  *  APIs
@@ -31,6 +24,9 @@ router.get('/signup/social', getViewSignupSocial.on);
 // If valid, redirect to service page. 
 // if not & signed in via OAuth providers, redirect to signup page.
 router.post('/signin/verify', postSigninVerify.on);
+
+/* TODO: add session check to /signup */
+router.post('/signup', postSignup.on);
 
 
 

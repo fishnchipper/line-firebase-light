@@ -9,7 +9,7 @@ Line is a NodeJS + Express App shell which can be used for web front application
 ## User Authentication
 - Google Firebase admin SDK is used but can be replaced by any 3rd-party authentication service or your own implmentation.
 
-- firebase server key is required. Create your one from firebase and then add `firebase-serverkey.json` to /line_modules/firebase.
+- firebase server key is required. Create your one from firebase and then add `firebase-serverkey.json` containing serverkey json to /line_modules/firebase.
 
 
 # Where to start

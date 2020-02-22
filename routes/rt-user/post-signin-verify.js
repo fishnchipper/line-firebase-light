@@ -1,7 +1,8 @@
 
 
 let line = require('../../line_modules/line');
-let dbAdapter = line.createDbAdapter();
+let authAdapter = line.createAuthAdapter();
+let dbAdapter = line.createDBAdapter();
 
 function on(req, res, next) {
     
@@ -10,13 +11,35 @@ function on(req, res, next) {
     console.log("==== idToken: ", idToken);
 
     // Verify the ID token and decode its payload.
-    dbAdapter.verifyIdToken(idToken)
+    authAdapter.verifyIdToken(idToken)
     .then((user) => {
-      console.log("==== user: ", user);
-      // Tell client to refresh token on user.
-      res.end(JSON.stringify({
-        status: 'verified'
-      }));
+
+      //
+      // auth provider successfully verified the user
+      // add another layer of user check such as user object is in db, role, paid|free user 
+      //
+      dbAdapter.getUser(user.__uid)
+      .then((user) => {
+
+          // Tell client to refresh token on user.
+          res.end(JSON.stringify({
+            status: 'verified'
+          }));
+      })
+      .catch((err) => {
+        console.log("==== reject reason: ", err);
+        if(err === 'nil') {
+          res.end(JSON.stringify({
+            status: 'signuprequired'
+          }));
+        }else {
+          res.end(JSON.stringify({
+            status: 'error'
+          }));
+        }
+      })
+
+
     })
     .catch((err) => {
       // Tell client to redirect to sign up page.

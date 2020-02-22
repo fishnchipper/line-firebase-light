@@ -17,7 +17,8 @@ let middleware = require('./middleware/check-token');
  */
 let line = require('./line_modules/line');
 // use firebase as back-end db
-line.initDbAccess('firebase');
+line.initAuthService('firebase');
+line.initDBService('firebase');
 
 
 /**

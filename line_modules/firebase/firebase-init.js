@@ -1,28 +1,38 @@
+/**
+ * Initialize Google firebase access
+ * 
+ * 
+ * node global constant/variable syntax: ___<vairable name>___
+ */
+"use strict";
 
-
-const ___firebase___ = {
-    keyFilename: __dirname + '/firebase-serverkey.json'
-};
+let environment = require('./firebase-environment');
 
 
 /**
- * firebase init
+ * interface - function initAuthService() implementation
  */
-function init() {
+function initAuthService() {
 
     //
     // init firebase admin as global nodejs variable
     //
     global.___firebaseAdmin___ = require('firebase-admin');
     ___firebaseAdmin___.initializeApp({
-        credential: ___firebaseAdmin___.credential.cert(___firebase___.keyFilename),
+        credential: ___firebaseAdmin___.credential.cert(environment.__firebase__.keyFilename),
         databaseURL: "https://line-7e593.firebaseio.com"
     });
+}
+exports.initAuthService = initAuthService;
+
+/**
+ * interface - function initDBService() implementation
+ */
+function initDBService() {
 
     // for access to firestore
     const Firestore = require('@google-cloud/firestore');
-    global.___firestore___ = new Firestore(___firebase___);
+    global.___firestore___ = new Firestore(environment.__firebase__);
     global.___lineDb___ = 'firebase';
 }
-
-exports.init = init;
+exports.initDBService = initDBService;

@@ -1,17 +1,46 @@
 
-"use strict";
 /**
- * line v0.1.0
+ * line module helping DB access from line app shell
+ * 
+ * v0.1.0
  */
+"use strict";
 
 let firebase = require('./firebase/firebase-init');
 let firebaseHelper = require('./firebase/firebase-helper');
 
+/**
+ * Init Auth Service
+ * 
+ * @param {string} __provider authentication service provider
+ */
+function initAuthService(__provider) {
+    if(__provider === 'firebase') {
+        firebase.initAuthService();
+    }
+}
+exports.initAuthService = initAuthService;
 
-function initDbAccess(__dbService) {
+/**
+ * Create Auth adapter
+ */
+function createAuthAdapter() {
+    // lineDB is a global variable in nodejs which is set in initDbAccess()
+    if(___lineDb___ === 'firebase') {
+        return firebaseHelper.createFirebaseAuthHelper();
+    }
+}
+exports.createAuthAdapter = createAuthAdapter;
 
-    if(__dbService === 'firebase') {
-        firebase.init();
+/**
+ * Init DB Service
+ * 
+ * @param {string} __provider db service provider
+ */
+function initDBService(__provider) {
+
+    if(__provider === 'firebase') {
+        firebase.initDBService();
     }
     /* add other db access init codes here, for example
     else if(__dbService === 'documentDB') {
@@ -19,17 +48,15 @@ function initDbAccess(__dbService) {
     }
     */
 }
+exports.initDBService = initDBService;
 
 /**
- * db helper
+ * Create DB adapter
  */
-function createDbAdapter() {
+function createDBAdapter() {
     // lineDB is a global variable in nodejs which is set in initDbAccess()
     if(___lineDb___ === 'firebase') {
-        return firebaseHelper.createFirebaseHelper();
+        return firebaseHelper.createFirebaseDBHelper();
     }
 }
-
-
-exports.initDbAccess = initDbAccess;
-exports.createDbAdapter = createDbAdapter;
+exports.createDBAdapter = createDBAdapter;

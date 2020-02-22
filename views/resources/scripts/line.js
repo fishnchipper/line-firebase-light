@@ -347,7 +347,6 @@ Line.prototype.signUpWithSocial = async function(__provider, __userObj, cb) {
     console.log("=== user ", __provider, " : ", __userObj);
     const userObj = {
         "signUpTime": Date.now(),
-        "lastSignInTime": Date.now(),
         "name": __userObj.name,
         "__uid": __userObj.user_id,
         "email": __userObj.email,

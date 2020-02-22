@@ -1,6 +1,6 @@
 
 let line = require('../../line_modules/line');
-let dbAdapter = line.createDbAdapter();
+let dbAdapter = line.createDBAdapter();
 
 
 function on(req, res, next) {

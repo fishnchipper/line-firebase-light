@@ -1,16 +1,16 @@
 
 let line = require('../../line_modules/line');
-let dbAdapter = line.createDBAdapter();
+let authAdapter = line.createAuthAdapter();
 
 
 function on(req, res, next) {
     
     // Get the ID token passed.
-    let userObj = req.body.userObj;
+    let userId = req.body.userId;
   
-    console.log("==== userObt: ", userObj);
+    console.log("==== userId: ", userId);
     // Verify the ID token and decode its payload.
-    dbAdapter.setUser(userObj)
+    authAdapter.signUpUser(userId)
     .then(() => {
         console.log("==== user added");
         // Tell client to refresh token on user.

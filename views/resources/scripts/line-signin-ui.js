@@ -34,12 +34,14 @@ LineSignInUI.prototype.signInWithGoogleOAuth = function() {
 
         self._line.signInGoogleAuthGoogleOAuth((__result, __user) => {
             self._spinner.stop();
-            if(__result.status == "signuprequired") {
+            if(__result.status == "signUpRequired") {
                 console.log("--- hello ",__user.claims.name, '. You need to sign up.');
                 self.__signUpHelper(__user);
-            }else {
+            }else if(__result.status == "signedUp"){
                 console.log("--- ", __user.claims.name, ' successfuly signed in with role:', __user.claims.role);
                 self._line.redirect('/service');
+            }else if(__result.status == "fail"){
+                console.log("--- error: ", __result);
             }
         });
 
@@ -65,9 +67,9 @@ LineSignInUI.prototype.__signUpHelper = function(__user){
     $("#line-signup-btn").click((e) => {
         e.preventDefault();
         console.log("--- signup btn clicked");
-        self._line.signUpWithSocial("google", __user.claims, ()=> {
+        self._line.signUpWithSocial("google", __user.claims.user_id, ()=> {
             console.log("--- signup successful");
-            
+
         });
     });
 }

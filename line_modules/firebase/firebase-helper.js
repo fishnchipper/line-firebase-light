@@ -29,12 +29,7 @@ let FirebaseAuthHelper = (function() {
                 typeof decodedToken.email_verified !== 'undefined' &&
                 decodedToken.email_verified) {
                 // verified
-                __user__.__uid = decodedToken.user_id;
-                __user__.name = decodedToken.name;
-                __user__.picture = decodedToken.picture;
-                __user__.email = decodedToken.email;
-                __user__.authProvider = 'google';
-                resolve(__user__);
+                resolve(decodedToken);
             } else {
                 // Return nothing.
                 reject('ineligible');
@@ -42,6 +37,56 @@ let FirebaseAuthHelper = (function() {
           });
         });
     }
+
+    /**
+     * check signUpStatus
+     * 
+     * @param {string} __uid __uid to check signUpStatus
+     * @return {Promise<string>} A promise fulfilled with status; otherwise, a rejected promise
+     */
+    FirebaseAuthHelper.prototype.signUpStatus = function(__uid) {
+        return new Promise((resolve, reject) => {
+          ___firebaseAdmin___.auth().getUser(__uid)
+          .then(function(userRecord) {
+            let user = userRecord.toJSON();
+            // See the UserRecord reference doc for the contents of userRecord.
+            console.log('Successfully fetched user data:', user);
+            if(user.customClaims.signUpStatus === true) {
+              resolve('signedUp');
+            }else {
+              reject('signUpRequired')
+            }
+          })
+          .catch(function(error) {
+            console.log('Error fetching user data:', error);
+            reject(error);
+          });
+        })
+    }
+
+
+    /**
+     * set signUpStatus user claim
+     * 
+     * @param {string} __uid __uid to set signUpStatus user claim.
+     * @return {Promise<string>} A promise fulfilled with status; otherwise, a rejected promise
+     */
+    FirebaseAuthHelper.prototype.signUpUser = function(__uid) {
+      return new Promise((resolve, reject) => {
+
+        ___firebaseAdmin___.auth().setCustomUserClaims(__uid, {signUpStatus: true})
+        .then(() => {
+          // The new custom claims will propagate to the user's ID token the
+          // next time a new one is issued.
+          resolve('signedUp');
+        })
+        .catch(function(error) {
+          console.log('Error setCustomUserClaims:', error);
+          reject(error);
+        });
+
+      })
+  }
     return FirebaseAuthHelper;
 })();
 exports.FirebaseAuthHelper = FirebaseAuthHelper;

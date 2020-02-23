@@ -213,14 +213,14 @@ Line.prototype.verifyIdToken = async function(idToken, cb) {
         contentType: 'application/json; charset=utf-8',
         data: JSON.stringify(obj),
         url: '/user/signin/verify',
-        success: function(data){
-                console.log("=== return with success -->", data);
-                cb(data);
+        success: function(res){
+                console.log("=== return with success -->", res);
+                cb(null, res);
             },
-        error: function(data) {
-                console.log("=== return with error--->", data);   
-                data.status = 'fail';
-                cb(data);        
+        error: function(err) {
+                console.log("=== return with error--->", err);   
+                err.status = 'error';
+                cb(err, null);        
             },
         beforeSend: function(xhr) {
             }
@@ -313,10 +313,14 @@ Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
             console.log("=== user trying sign-in: ", idTokenResult);
             
             // verify ID token returned from Google Auth
-            self.verifyIdToken(idTokenResult.token, (data) => {
-                const result = JSON.parse(data);
+            self.verifyIdToken(idTokenResult.token, (err, res) => {
+                if(err) {
+                    res.status = 'fail';
+                    __cb(res. null);
+                }
+                const result = JSON.parse(res);
                 console.log("=== ", result);
-                if (result && result.status == 'verified') {
+                if (result.status == 'signedUp') {
                     // Force token refresh. The token claims will contain the additional claims.
                     self._auth.auth().currentUser.getIdToken(true);
                     self._auth.auth().currentUser.getIdTokenResult()
@@ -335,7 +339,7 @@ Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
                         var credential = error.credential;
                         // ...
                     });
-                }else if(result && result.status == 'signuprequired') {
+                }else if(result.status == 'signUpRequired') {
                     __cb(result, idTokenResult);
                 }
             });
@@ -343,25 +347,19 @@ Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
     });
 }
 
-Line.prototype.signUpWithSocial = async function(__provider, __userObj, cb) {
-    console.log("=== user ", __provider, " : ", __userObj);
-    const userObj = {
-        "signUpTime": Date.now(),
-        "name": __userObj.name,
-        "__uid": __userObj.user_id,
-        "email": __userObj.email,
-        "picture": __userObj.picture,
-        "authProvider": __provider
+Line.prototype.signUpWithSocial = async function(__provider, __userId, cb) {
+    console.log("=== user ", __provider, " : ", __userId);
+    const userId = {
+        "userId": __userId,
     };
 
     // Pass the ID token to the server.
-    let obj = { userObj: userObj };
-    console.log("=== userObj: ", obj);
+    console.log("=== userId: ", userId);
     await $.ajax({
         crossDomain: true,
         type: "POST",
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(obj),
+        data: JSON.stringify(userId),
         url: '/user/signup',
         success: function(data){
                 console.log("=== return with success -->", data);

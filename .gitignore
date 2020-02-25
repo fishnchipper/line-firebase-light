@@ -1,5 +1,6 @@
 # firebase private key
 line_modules/firebase/*.json
+views/resources/scripts/firebaseconfig.js
 
 # nodejs
 node_modules

@@ -13,7 +13,7 @@ let https = require('https'),
 let middleware = require('./middleware/check-token');
 
 /**
- * init db access
+ * init firebase service access
  */
 let line = require('./line_modules/line');
 // use firebase as back-end db

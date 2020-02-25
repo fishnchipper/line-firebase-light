@@ -363,12 +363,12 @@ Line.prototype.signUpWithSocial = async function(__provider, __userId, cb) {
         url: '/user/signup',
         success: function(data){
                 console.log("=== return with success -->", data);
-                cb(data);
+                cb(JSON.parse(data));
             },
         error: function(data) {
                 console.log("=== return with error--->", data);   
                 data.status = 'fail';
-                cb(data);        
+                cb(JSON.parse(data));        
             },
         beforeSend: function(xhr) {
             }

@@ -36,7 +36,7 @@ LineSignInUI.prototype.signInWithGoogleOAuth = function() {
             self._spinner.stop();
             if(__result.status == "signUpRequired") {
                 console.log("--- hello ",__user.claims.name, '. You need to sign up.');
-                self.__signUpHelper(__user);
+                self.__signUpHelper(__user.claims.name);
             }else if(__result.status == "signedUp"){
                 console.log("--- ", __user.claims.name, ' successfuly signed in with role:', __user.claims.role);
                 self._line.redirect('/service');
@@ -48,30 +48,29 @@ LineSignInUI.prototype.signInWithGoogleOAuth = function() {
     });
 }
 
-LineSignInUI.prototype.__signUpHelper = function(__user){
+LineSignInUI.prototype.__signUpHelper = function(__name){
     let self = this;
+    $('#line-title').html('');
+    $('#line-user-image').remove();
     let signupHtml = `<div class="tab-content" id="myTabContent">
-                        
-                            <div class="tab-pane fade show active" role="tabpanel" style="margin-top: 3em;">
-                                <button id="line-signup-btn" class="btn btn-lg btn-secondary btn-block">Sign Up</button>
-                            </div>
-                            <p style="margin-top: 2em;">by clicking Sing Up button, you agree to <a href="">Line's Policy & Terms of Use</a></p>
-                            <p style="margin-top: 2em;"><a href="/" >Not this time</a></p>
-                        
+                            <p style="font-size: 2em">Hello ` + __name +
+                            `<p>Sign Up required.</p>
+                            <p style="margin-top: 4em;">Redirecting to Sign Up <span id="time-left"></span></p>
                       </div>`;
-    $("#line-title").html("Hello " + __user.claims.name);
-    $("#line-sub-title").html(`<p style="margin-top: 1em;">You are not with us yet. Please join!</p>`);
-    $("#line-user-image").attr("src", __user.claims.picture);
     $("#line-sign-form").html(signupHtml);
 
-    $("#line-signup-btn").click((e) => {
-        e.preventDefault();
-        console.log("--- signup btn clicked");
-        self._line.signUpWithSocial("google", __user.claims.user_id, ()=> {
-            console.log("--- signup successful");
-
-        });
-    });
+    window.setInterval(function() {
+            let timeLeft = $("#time-left").html();
+            if(timeLeft === '...') {
+                window.location= ("/user/signup");
+            } else if (timeLeft === '..'){
+                $("#time-left").html('...');
+            } else if (timeLeft === '.'){
+                $("#time-left").html('..');
+            } else if (timeLeft === ''){
+                $("#time-left").html('.');
+            }
+        }, 1000);
 }
 
 LineSignInUI.prototype.signInWithEmailPass = function() {

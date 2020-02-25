@@ -4,9 +4,10 @@ let express = require('express');
 let router = express.Router();
 
 
-let getViewSignin = require('./get-view-signin');
+let getViewSignIn = require('./get-view-signin');
+let getViewSignUp = require('./get-view-signup');
 let postSigninVerify = require('./post-signin-verify')
-let postSignup = require('./post-signup');
+let postSignUp = require('./post-signup');
 
 
 /**
@@ -14,7 +15,10 @@ let postSignup = require('./post-signup');
  */
 
 // get view: /signin 
-router.get('/signin', getViewSignin.on);
+router.get('/signin', getViewSignIn.on);
+
+// get view: /signup 
+router.get('/signup', getViewSignUp.on);
 
 
 /**
@@ -26,7 +30,7 @@ router.get('/signin', getViewSignin.on);
 router.post('/signin/verify', postSigninVerify.on);
 
 /* TODO: add session check to /signup */
-router.post('/signup', postSignup.on);
+router.post('/signup', postSignUp.on);
 
 
 

@@ -2,14 +2,14 @@
 
 
 
-function LineSignInUI(redirect, auth) {
+function LineSignInUI(redirect) {
 
-    this._line = new Line(auth);
+    this._line = new Line();
     this._redirect = redirect;
     this._spinner = new Spinner();
 
     //this.isSignIn();
-    this.signInWithGoogleOAuth();
+    this.signInWithOAuthProviders();
     this.signInWithEmailPass();
 };
 
@@ -24,29 +24,6 @@ LineSignInUI.prototype.isSignIn = function() {
     }
 }
 
-LineSignInUI.prototype.signInWithGoogleOAuth = function() {
-    let self = this;
-    let signInGoogleButton = $("#sl-signin-google-btn");
-    signInGoogleButton.click(function(e) {
-        e.preventDefault();
-        self._spinner.spin($(".card-container").get(0));
-        console.log("--- google signin clicked");
-
-        self._line.signInGoogleAuthGoogleOAuth((__result, __user) => {
-            self._spinner.stop();
-            if(__result.status == "signUpRequired") {
-                console.log("--- hello ",__user.claims.name, '. You need to sign up.');
-                self.__signUpHelper(__user.claims.name);
-            }else if(__result.status == "signedUp"){
-                console.log("--- ", __user.claims.name, ' successfuly signed in with role:', __user.claims.role);
-                self._line.redirect('/service');
-            }else if(__result.status == "fail"){
-                console.log("--- error: ", __result);
-            }
-        });
-
-    });
-}
 
 LineSignInUI.prototype.__signUpHelper = function(__name){
     let self = this;
@@ -72,6 +49,44 @@ LineSignInUI.prototype.__signUpHelper = function(__name){
             }
         }, 1000);
 }
+
+LineSignInUI.prototype.__eventHandlerGoogleBtnClick = function() {
+    let self = this;
+    let signInGoogleButton = $("#sl-signin-google-btn");
+    signInGoogleButton.click(function(e) {
+        e.preventDefault();
+        self._spinner.spin($(".card-container").get(0));
+        console.log("--- google signin clicked");
+
+        self._line.signInGoogleAuthGoogleOAuth((__result, __user) => {
+            self._spinner.stop();
+            if(__result.status == "signUpRequired") {
+                console.log("--- hello ",__user.claims.name, '. You need to sign up.');
+                self.__signUpHelper(__user.claims.name);
+            }else if(__result.status == "signedUp"){
+                console.log("--- ", __user.claims.name, ' successfuly signed in with role:', __user.claims.role);
+                self._line.redirect('/service');
+            }else if(__result.status == "fail"){
+                console.log("--- error: ", __result);
+            }
+        })
+        .then(() => {
+            // A page redirect would suffice as the persistence is set to NONE.
+            return self._line.signOut();
+        }).then(() => {
+            window.location.assign('/');
+        });
+
+    });
+
+}
+
+LineSignInUI.prototype.signInWithOAuthProviders = function() {
+    let self = this;
+    self.__eventHandlerGoogleBtnClick();
+}
+
+
 
 LineSignInUI.prototype.signInWithEmailPass = function() {
 

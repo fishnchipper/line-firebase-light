@@ -78,14 +78,12 @@
 
 
         <script src="/resources/scripts/environment.js"></script>   
+        <script src="/resources/scripts/firebaseconfig.js"></script>  
         <script src="/resources/scripts/line.js"></script>
         <script src="/resources/scripts/line-signin-ui.js"></script>
        <script>
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            firebase.analytics();
             (function() { 
-              new LineSignInUI('/service', firebase);
+              new LineSignInUI('/service');
             })();
        </script>
   </body>

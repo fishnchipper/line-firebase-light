@@ -4,11 +4,17 @@
 
 (function( window ) {
     'use strict';
-    function Line(auth) {
+    function Line() {
 
-        this._url = line.url;
-        this._auth = auth;
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        //firebase.analytics();
+        // As httpOnly cookies are to be used, do not persist any state client side.
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 
+        this._auth = firebase;
+
+        this._url = ___line___.url;
         this._view = "";
         this._collection = "";
         this._what = "";
@@ -16,6 +22,10 @@
         this._data;
         // member properties
         
+        // for csrf token
+        let randomString = [...Array(32)].map(i=>(~~(Math.random()*36)).toString(36)).join('');
+        Cookies.set("csrfToken", randomString, { expires: 1, secure: true});
+
     };
     window.Line = Line;
 })(window);
@@ -155,12 +165,8 @@ Line.prototype.get = async function(param) {
 }
 
 
-Line.prototype.signOut = function(cb) {
-    Cookies.remove('gIsLogin');
-    Cookies.remove('gJwt');
-    Cookies.remove('gUser');
-    
-    cb();
+Line.prototype.signOut = function() {
+    return firebase.auth().signOut();
 }
 
 /**
@@ -224,6 +230,31 @@ Line.prototype.verifyIdToken = async function(idToken, cb) {
             },
         beforeSend: function(xhr) {
             }
+    });
+}
+
+Line.prototype.signIn = function(__idToken, __csrfToken) {
+    return new Promise((resolve, reject) => {
+        console.log("=== csrfToken: ", __csrfToken);
+        let obj = { idToken: __idToken,  csrfToken: __csrfToken};
+        $.ajax({
+            crossDomain: true,
+            type: "POST",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(obj),
+            url: '/user/signin',
+            success: function(res){
+                    console.log("=== return with success -->", res);
+                    resolve(res);
+                },
+            error: function(err) {
+                    console.log("=== return with error--->", err);   
+                    err.status = 'error';
+                    reject(err);        
+                },
+            beforeSend: function(xhr) {
+                }
+        });
     });
 }
 
@@ -299,7 +330,7 @@ Line.prototype.signInGoogleAuthEmailPass = function(credential, cd) {
 /**
  * sign in with Google Firebase Authentication : Google OAuth
  * 
- * @param {function}    cb callback
+ * @param {function}    __cb callback
  */
 Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
     let self = this;
@@ -308,10 +339,11 @@ Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
     self._auth.auth().signInWithPopup(provider)
     .then((result) => {
         // User is signed in. Get the ID token.
-        result.user.getIdTokenResult()
-        .then((idTokenResult) => {
-            console.log("=== user trying sign-in: ", idTokenResult);
-            
+        return result.user.getIdToken().then((idToken) => {
+            console.log("=== user trying sign-in: ", idToken);
+            const csrfToken = Cookies.get('csrfToken');
+            return self.signIn(idToken, csrfToken);
+            /*
             // verify ID token returned from Google Auth
             self.verifyIdToken(idTokenResult.token, (err, res) => {
                 if(err) {
@@ -343,6 +375,8 @@ Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
                     __cb(result, idTokenResult);
                 }
             });
+
+            */
         });
     });
 }

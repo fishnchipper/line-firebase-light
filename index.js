@@ -8,6 +8,7 @@ let https = require('https'),
     bodyParser = require('body-parser'),
     helmet = require('helmet'),
     path = require('path'),
+    cookieParser = require('cookie-parser'),
     mustacheExpress = require('mustache-express');
 
 let middleware = require('./middleware/check-token');
@@ -46,6 +47,7 @@ app.set('view engine', 'html');
 app.locals.delimiters = '{% %}';
 
 // url access granted
+app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname + '/views')));
 
 // main page

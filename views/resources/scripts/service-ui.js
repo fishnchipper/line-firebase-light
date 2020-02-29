@@ -5,8 +5,14 @@
  */
 function ServiceUI() {
 
-    this._line = new window.Line(line.url);
-    this._redirect = line.url + '/sign-in';
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    this._line = new Line(firebase);
+    this._redirect = line.url + '/';
+    this._spinner = new Spinner();
+
     this._user = '';
 
     // member functions

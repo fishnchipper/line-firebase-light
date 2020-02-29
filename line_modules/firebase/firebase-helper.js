@@ -11,6 +11,26 @@ let FirebaseAuthHelper = (function() {
      */
     function FirebaseAuthHelper() {}
 
+    FirebaseAuthHelper.prototype.createSessionCookie = function(__idToken, __expiresIn) {
+      let self = this;
+
+      return new Promise((resolve, reject) => {
+
+          // Create the session cookie. This will also verify the ID token in the process.
+          // The session cookie will have the same claims as the ID token.
+          // To only allow session cookie setting on recent sign-in, auth_time in ID token
+          // can be checked to ensure user was recently signed in before creating a session cookie.
+          ___firebaseAdmin___.auth().createSessionCookie(__idToken, {expiresIn:__expiresIn})
+            .then((sessionCookie) => {
+              // Set cookie policy for session cookie.
+              console.log("++++ sessionCookie: ", sessionCookie);
+              resolve(sessionCookie);
+            }, error => {
+              console.log("++++ error: ", error);
+              reject(error);
+            });
+      });
+    }
     /**
      * verify firebase ID token
      * 
@@ -22,14 +42,21 @@ let FirebaseAuthHelper = (function() {
 
         return new Promise((resolve, reject) => {
           ___firebaseAdmin___.auth().verifyIdToken(__idToken)
-          .then((decodedToken) => {
-            console.log("+++ customer claims: ", decodedToken);
+          .then((decodedIdToken) => {
+            console.log("+++ customer claims: ", decodedIdToken);
+
             // Verify user is eligible for additional privileges.
-            if (typeof decodedToken.email !== 'undefined' &&
-                typeof decodedToken.email_verified !== 'undefined' &&
-                decodedToken.email_verified) {
-                // verified
-                resolve(decodedToken);
+            if (typeof decodedIdToken.email !== 'undefined' &&
+                typeof decodedIdToken.email_verified !== 'undefined' &&
+                decodedIdToken.email_verified) {
+
+                // Only process if the user just signed in in the last 5 minutes.
+                if (new Date().getTime() / 1000 - decodedIdToken.auth_time < 5 * 60) {
+                  // Create session cookie and set it.
+                  return resolve(decodedIdToken);
+                }
+                // return recent sign-in required message
+                reject('recentSignInRequired');
             } else {
                 // Return nothing.
                 reject('ineligible');

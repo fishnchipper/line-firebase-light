@@ -12,6 +12,7 @@ let https = require('https'),
     mustacheExpress = require('mustache-express');
 
 let middleware = require('./middleware/check-token');
+let checkSession = require('./middleware/check-session');
 
 /**
  * init firebase service access
@@ -26,8 +27,8 @@ line.initDBService('firebase');
  * routes
  */
 let routeMain = require('./routes/rt-main');
-let routeUser = require('./routes/rt-user/rt-user');
-let routeView = require('./routes/rt-view/rt-view');
+let routeAuth = require('./routes/rt-auth/rt-auth');
+let routeService = require('./routes/rt-service/rt-service');
 let routeApi = require('./routes/rt-api/rt-api');
 
 let app = express();
@@ -43,27 +44,31 @@ app.use(bodyParser.json());
 
 // register template engine
 app.engine('html', mustacheExpress());
+app.set('views', './views');
 app.set('view engine', 'html');
 app.locals.delimiters = '{% %}';
 
 // url access granted
 app.use(cookieParser());
-app.use('/', express.static(path.join(__dirname + '/views')));
+console.log("----- ", __dirname);
+app.use('/', express.static(path.join(__dirname + '/views/resources')));
 
 // main page
 app.get('/', routeMain.main);
+app.get('/404', routeMain.noResource);
+app.get('/oops', routeMain.error);
 
 // user auth
-app.use('/user', routeUser.router);
+app.use('/auth', routeAuth.router);
 
-// view pages
-app.use('/service', middleware.checkToken, routeView.router);
+// view service pages
+app.use('/service', checkSession.on, routeService.router);
 
 // add RESTFul APIs below
-app.use('/api', middleware.checkToken, routeApi.router);
+app.use('/api', checkSession.on, routeApi.router);
 
 // end session for other request with erro message return
-app.use(routeMain.endSession);
+app.use(routeMain.noResource);
 
 
 /**

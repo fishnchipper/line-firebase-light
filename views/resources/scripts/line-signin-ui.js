@@ -11,9 +11,6 @@
     function main() {
         function init() {}
 
-        init.checkSession = function() {
-            
-        }
         return init;
     }
     return main();
@@ -23,11 +20,9 @@
 
         let spinner = new Spinner();
         let _signUpHelper = function(){
-            $('#line-title').html('');
-            $('#line-user-image').remove();
+            $('#line-signup-link').remove();
             let signupHtml = `<div class="tab-content" id="myTabContent">
-                                    <p style="font-size: 2em">Hello`+
-                                    `<p>Sign Up required.</p>
+                                    <p>Sign Up required.</p>
                                     <p style="margin-top: 4em;">Redirecting to Sign Up <span id="time-left"></span></p>
                               </div>`;
             $("#line-sign-form").html(signupHtml);
@@ -35,7 +30,7 @@
             window.setInterval(function() {
                     let timeLeft = $("#time-left").html();
                     if(timeLeft === '...') {
-                        window.location= ("/user/signup");
+                        window.location= ("/auth/signup");
                     } else if (timeLeft === '..'){
                         $("#time-left").html('...');
                     } else if (timeLeft === '.'){
@@ -73,7 +68,7 @@
                 })
                 .catch((error) => {
                     console.log("--- error: ", error);
-                    self._spinner.stop();
+                    spinner.stop();
                     Line.redirect('/oops')
                 })
             });

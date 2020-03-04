@@ -19,14 +19,14 @@
 
   <body class="text-center">
         <div class="card-container">
-            <h1><span id="line-title">Sign Up</span></h1>
-            <h3 class="h3 mb-3 font-weight-normal" ><span id="line-sub-title"></span></h3>
-            <form class="form-signup">
-                <img class="mb-4" id="line-user-image" src="/img/sign-in.png" alt="" width="72" height="72">
-                <div id="line-signup-status"></div>
-                <h1 id="line-subtitle" class="h3 mb-3 font-weight-normal"></h1>
-                <div id="line-sign-form" style="width: 250px;">
-                  <ul class="nav nav-tabs" id="myTab" role="tablist" style="width: 250px;">
+          <h1><span id="line-title">Sign Up</span></h1>
+          <h3 class="h3 mb-3 font-weight-normal" ><span id="line-sub-title"></span></h3>
+          <form class="form-signin">
+              <img class="mb-4" id="line-user-image" src="/img/sign-in.png" alt="" width="72" height="72">
+              <div id="line-signin-status"></div>
+              <h1 class="h3 mb-3 font-weight-normal"></h1>
+              <div id="line-sign-form">
+                <ul class="nav nav-tabs" id="myTab" role="tablist" style="width: 250px;">
 
                     <li class="nav-item">
                       <a class="nav-link active" id="social-tab" data-toggle="tab" href="#social" role="tab" aria-controls="profile" aria-selected="false">Social</a>
@@ -72,21 +72,14 @@
         <script src="/scripts/md5.min.js"></script>
 
         <!-- The core Firebase JS SDK is always required and must be listed first -->
-        <!-- 
+
         <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
         <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-auth.js"></script>
-        
-
         <script src="/scripts/environment.js"></script>   
         <script src="/scripts/firebaseconfig.js"></script>  
-        -->
-        <script src="/scripts/line.js"></script>
+
+        <script src="/scripts/line2.js"></script>
         <script src="/scripts/line-signup-ui.js"></script>
-       <script>
-            (function() { 
-              new LineSignUpUI('/service');
-            })();
-       </script>
   </body>
 </html>

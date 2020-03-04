@@ -8,6 +8,7 @@
 
 })(function(){
 
+    let _user = null;
     const _url = ___LINE___.url;
 
     // Initialize Firebase
@@ -46,6 +47,8 @@
                 firebase.auth().signInWithPopup(provider)
                 .then((result) => {
                     // User is signed in. Get the ID token from firebase
+                    console.log("=== user: ", result.user);
+                    _user = result.user;
                     return result.user.getIdToken();
                 }) 
                 .then((idToken) => {
@@ -60,6 +63,12 @@
                 .catch((err) => {
                     reject(err);
                 });       
+            });
+        }
+        api.signUpWithSocial = function(_provider, _userId) {
+            return new Promise((_resolve, _reject) => {
+                let obj = { provider: _provider, userId: _userId};
+                _callApiPromise("POST", "/auth/signup", obj, _resolve, _reject);
             });
         }
         api.signOut = function() {
@@ -84,6 +93,9 @@
                     window.document.write(data);
                 }, null);
                 */
+        }
+        api.getUserId = function() {
+            return _user.uid;
         }
 
         return api;

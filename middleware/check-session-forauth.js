@@ -10,7 +10,7 @@ function on(req, res, next) {
     ___firebaseAdmin___.auth().verifySessionCookie(sessionCookie, true /** checkRevoked */)
       .then((decodedClaims) => {
         console.log("==== valid session");
-        res.status(418).render('./service/index');
+        res.status(418).redirect('/service');
       })
       .catch(error => {
         // Session cookie is unavailable or invalid. Force user to login.

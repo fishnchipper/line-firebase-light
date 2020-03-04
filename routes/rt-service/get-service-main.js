@@ -4,9 +4,12 @@
 
 function on(req, res, next) {
     
-    let values = '';
+    //console.log(" ==== ", req.decodedSession);
+    let decodedSession = req.decodedSession
+    let values = {firstInitial: decodedSession.name.charAt(0).toUpperCase()};
 
-    res.render('./user/sign-in', values, function(err, html) {
+    
+    res.render('./service/index', values, function(err, html) {
         if(err) {
             console.log(err);
             res.status(err.status).end();

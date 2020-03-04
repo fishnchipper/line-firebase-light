@@ -6,7 +6,7 @@ function on(req, res, next) {
     
     let values = '';
 
-    res.render('./user/sign-up', values, function(err, html) {
+    res.render('./auth/sign-up', values, function(err, html) {
         if(err) {
             console.log(err);
             res.status(err.status).end();

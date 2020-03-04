@@ -14,7 +14,7 @@
 
         this._auth = firebase;
 
-        this._url = ___line___.url;
+        this._url = ___LINE___.url;
         this._view = "";
         this._collection = "";
         this._what = "";
@@ -27,7 +27,7 @@
         Cookies.set("csrfToken", randomString, { expires: 1, secure: true});
 
     };
-    window.Line = Line;
+    //window.Line = Line;
 })(window);
 
 
@@ -74,6 +74,18 @@ Line.prototype.__callApi = function(_calltype, _callurl, cb) {
 /**
  * execution of serlook api query
  */
+Line.prototype._postPromise = function(_api, _obj, _resolve, _reject) {
+    $.ajax({
+        crossDomain: true,
+        type: "POST",
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(_obj),
+        url: _api
+    })
+    .done(_resolve)
+    .fail(_reject);
+}
+
 Line.prototype.post = async function(object) {
     let self = this;
 
@@ -233,7 +245,7 @@ Line.prototype.verifyIdToken = async function(idToken, cb) {
     });
 }
 
-Line.prototype.signIn = function(__idToken, __csrfToken) {
+Line.prototype.proceedSignIn = function(__idToken, __csrfToken) {
     return new Promise((resolve, reject) => {
         console.log("=== csrfToken: ", __csrfToken);
         let obj = { idToken: __idToken,  csrfToken: __csrfToken};
@@ -249,7 +261,7 @@ Line.prototype.signIn = function(__idToken, __csrfToken) {
                 },
             error: function(err) {
                     console.log("=== return with error--->", err);   
-                    err.status = 'error';
+                    //err.status = 'error';
                     reject(err);        
                 },
             beforeSend: function(xhr) {
@@ -330,24 +342,42 @@ Line.prototype.signInGoogleAuthEmailPass = function(credential, cd) {
 /**
  * sign in with Google Firebase Authentication : Google OAuth
  * 
- * @param {function}    __cb callback
+ * @return {Promise<response>} A promise fulfilled with response; otherwise, a rejected promise
  */
-Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
-    let self = this;
-    let currentUser = null;
-    let provider = new self._auth.auth.GoogleAuthProvider();
-    self._auth.auth().signInWithPopup(provider)
-    .then((result) => {
-        // User is signed in. Get the ID token.
-        return result.user.getIdToken().then((idToken) => {
+Line.prototype.signInGoogleAuthGoogleOAuth = function() {
+
+    return new Promise((_resolve, _reject) => {
+
+        let self = this;
+        let currentUser = null;
+        let provider = new self._auth.auth.GoogleAuthProvider();
+        self._auth.auth().signInWithPopup(provider)
+        .then((result) => {
+            // User is signed in. Get the ID token from firebase
+            return result.user.getIdToken();
+        }) 
+        .then((idToken) => {
+            // validate ID token and get session returned if okay.
             console.log("=== user trying sign-in: ", idToken);
             const csrfToken = Cookies.get('csrfToken');
-            return self.signIn(idToken, csrfToken);
+            console.log("=== csrfToken: ", csrfToken);
+            
+            let obj = { idToken: idToken,  csrfToken:csrfToken};
+            self._postPromise("/user/signin", obj, _resolve, _reject)
+        })
+        .catch((err) => {
+            reject(err);
+        });
+
+    });
+
+
+        
             /*
             // verify ID token returned from Google Auth
             self.verifyIdToken(idTokenResult.token, (err, res) => {
                 if(err) {
-                    res.status = 'fail';
+                    res.status = 'fail';signInGoogleAuthGoogleOAuth
                     __cb(res. null);
                 }
                 const result = JSON.parse(res);
@@ -377,8 +407,8 @@ Line.prototype.signInGoogleAuthGoogleOAuth = function(__cb) {
             });
 
             */
-        });
-    });
+ //       });
+ //   });
 }
 
 Line.prototype.signUpWithSocial = async function(__provider, __userId, cb) {

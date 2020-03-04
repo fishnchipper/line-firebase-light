@@ -2,19 +2,19 @@
 
 
 
-function LineSignUpUI(redirect, auth) {
+function LineSignUpUI(redirect) {
 
-    this._line = new Line(auth);
+    this._line = new Line();
     this._redirect = redirect;
     this._spinner = new Spinner();
 
     //this.isSignIn();
-    this.signUpWithGoogleOAuth();
+    this.signUpWithOAuthProvider();
 };
 
 
 
-LineSignUpUI.prototype.signUpWithGoogleOAuth = function() {
+LineSignUpUI.prototype.signUpWithOAuthProvider = function() {
     let self = this;
     let signUpGoogleButton = $("#sl-signup-google-btn");
     signUpGoogleButton.click(function(e) {

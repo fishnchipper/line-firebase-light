@@ -2,11 +2,11 @@
 
 
 
-function getViewService(req, res, next) {
+function on(req, res, next) {
     
     let values = '';
 
-    res.render('./service/index', values, function(err, html) {
+    res.render('./auth/sign-in', values, function(err, html) {
         if(err) {
             console.log(err);
             res.status(err.status).end();
@@ -17,4 +17,4 @@ function getViewService(req, res, next) {
     });
 }
 
-module.exports.on= getViewService;
+module.exports.on= on;

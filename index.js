@@ -46,7 +46,6 @@ app.use(bodyParser.json());
 app.engine('html', mustacheExpress());
 app.set('views', './views');
 app.set('view engine', 'html');
-app.locals.delimiters = '{% %}';
 
 // url access granted
 app.use(cookieParser());

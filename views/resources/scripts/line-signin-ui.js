@@ -1,10 +1,95 @@
 
 
+(function(_initUI, _eHanlder) {
 
+    let initUI = _initUI();
+    let eHandler = _eHanlder();
+
+    eHandler.clickGoogleBtn();
+
+})(function() {  // initialization
+    function main() {
+        function init() {}
+
+        init.checkSession = function() {
+            
+        }
+        return init;
+    }
+    return main();
+    
+},function() {  // event handler
+    function main() {
+
+        let spinner = new Spinner();
+        let _signUpHelper = function(){
+            $('#line-title').html('');
+            $('#line-user-image').remove();
+            let signupHtml = `<div class="tab-content" id="myTabContent">
+                                    <p style="font-size: 2em">Hello`+
+                                    `<p>Sign Up required.</p>
+                                    <p style="margin-top: 4em;">Redirecting to Sign Up <span id="time-left"></span></p>
+                              </div>`;
+            $("#line-sign-form").html(signupHtml);
+        
+            window.setInterval(function() {
+                    let timeLeft = $("#time-left").html();
+                    if(timeLeft === '...') {
+                        window.location= ("/user/signup");
+                    } else if (timeLeft === '..'){
+                        $("#time-left").html('...');
+                    } else if (timeLeft === '.'){
+                        $("#time-left").html('..');
+                    } else if (timeLeft === ''){
+                        $("#time-left").html('.');
+                    }
+                }, 1000);
+        }
+
+        function eHandler() {}
+
+        eHandler.clickGoogleBtn = function() {
+            let signInGoogleButton = $("#sl-signin-google-btn");
+            signInGoogleButton.click(function(e) {
+                e.preventDefault();
+                spinner.spin($(".card-container").get(0));
+                console.log("--- google signin clicked");
+        
+                Line.signInGoogleAuthGoogleOAuth()
+                .then((_response) => {
+                    let response = JSON.parse(_response);
+                    console.log("--- result: ", response.status);
+                    spinner.stop();
+                    if(response.status == "signUpRequired") {
+                        console.log("--- sign up required.");
+                        _signUpHelper();
+                    }else if(response.status == "signedUp"){
+                        console.log("--- successfuly signed");
+                        Line.redirect('/service');
+                    }else if(response.status == "fail"){
+                        console.log("--- error: ", __result);
+                        Line.redirect('/oops');
+                    }
+                })
+                .catch((error) => {
+                    console.log("--- error: ", error);
+                    self._spinner.stop();
+                    Line.redirect('/oops')
+                })
+            });
+        }
+
+        return eHandler;
+    }
+    return main();
+});
+
+
+/*
 
 function LineSignInUI(redirect) {
 
-    this._line = new Line();
+    //this._line = new Line();
     this._redirect = redirect;
     this._spinner = new Spinner();
 
@@ -17,20 +102,20 @@ LineSignInUI.prototype.isSignIn = function() {
 
     let self = this;
 
-    console.log("--- ", self._line.isSignIn());
+    console.log("--- ", Line.isSignIn());
 
-    if(self._line.isSignIn() && self._line.getJwt()) {
-        self._line.redirect(self._redirect);
+    if(Line.isSignIn() && Line.getJwt()) {
+        Line.redirect(self._redirect);
     }
 }
 
 
-LineSignInUI.prototype.__signUpHelper = function(__name){
+LineSignInUI.prototype.__signUpHelper = function(){
     let self = this;
     $('#line-title').html('');
     $('#line-user-image').remove();
     let signupHtml = `<div class="tab-content" id="myTabContent">
-                            <p style="font-size: 2em">Hello ` + __name +
+                            <p style="font-size: 2em">Hello`+
                             `<p>Sign Up required.</p>
                             <p style="margin-top: 4em;">Redirecting to Sign Up <span id="time-left"></span></p>
                       </div>`;
@@ -58,24 +143,26 @@ LineSignInUI.prototype.__eventHandlerGoogleBtnClick = function() {
         self._spinner.spin($(".card-container").get(0));
         console.log("--- google signin clicked");
 
-        self._line.signInGoogleAuthGoogleOAuth((__result, __user) => {
+        window.Line.signInGoogleAuthGoogleOAuth()
+        .then((_response) => {
+            let response = JSON.parse(_response);
+            console.log("--- result: ", response.status);
             self._spinner.stop();
-            if(__result.status == "signUpRequired") {
-                console.log("--- hello ",__user.claims.name, '. You need to sign up.');
-                self.__signUpHelper(__user.claims.name);
-            }else if(__result.status == "signedUp"){
-                console.log("--- ", __user.claims.name, ' successfuly signed in with role:', __user.claims.role);
-                self._line.redirect('/service');
-            }else if(__result.status == "fail"){
+            if(response.status == "signUpRequired") {
+                console.log("--- sign up required.");
+                self.__signUpHelper();
+            }else if(response.status == "signedUp"){
+                console.log("--- successfuly signed");
+                Line.redirect('/service');
+            }else if(response.status == "fail"){
                 console.log("--- error: ", __result);
             }
         })
-        .then(() => {
-            // A page redirect would suffice as the persistence is set to NONE.
-            return self._line.signOut();
-        }).then(() => {
-            window.location.assign('/');
-        });
+        .catch((error) => {
+            console.log("--- error: ", error);
+            self._spinner.stop();
+            Line.redirect('/error')
+        })
 
     });
 
@@ -102,7 +189,7 @@ LineSignInUI.prototype.signInWithEmailPass = function() {
         let userObj = { email: $("#sl-signin-email").val(), password: $("#sl-signin-pw").val()};
         console.log("--- Login credential! --->", userObj);
 
-        self._line.signinWithEmailPass(userObj, self._redirect, function(err, response) {
+        Line.signinWithEmailPass(userObj, self._redirect, function(err, response) {
             self._spinner.stop();
             signinButton.css("visibility", "visible");
             if(err) {
@@ -132,4 +219,4 @@ LineSignInUI.prototype.signInWithEmailPass = function() {
     }); // end of signinButton.click
 }
 
-
+*/

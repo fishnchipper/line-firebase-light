@@ -27,7 +27,7 @@
       }
     </style>
     <!-- Custom styles for this template -->
-    <link href="/resources/css/main.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
 
   </head>
   <body class="text-center">
@@ -40,7 +40,7 @@
             <p class="lead">A NodeJS Express App Shell</p>
             <p>v0.1.0</p>
             <p class="lead">
-              <a href="/user/signin" class="btn btn-lg btn-secondary">Sign In</a>
+              <a href="/auth/signin" class="btn btn-lg btn-secondary">Sign In</a>
             </p>
           </main>
 
@@ -50,5 +50,15 @@
             </div>
           </footer>
       </div>
+
+      <!-- The core Firebase JS SDK is always required and must be listed first -->
+      <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-analytics.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-auth.js"></script>   
+
+      <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+      <script src="/scripts/environment.js"></script>   
+      <script src="/scripts/firebaseconfig.js"></script>  
+      <script src="/scripts/line2.js"></script>
   </body>
 </html>

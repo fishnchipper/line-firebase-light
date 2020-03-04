@@ -21,7 +21,22 @@ function main(req, res, next) {
 }
 
 
-function end(req, res) {
+function error(req, res, next) {
+
+    // display main page
+    res.status(500).render('./error', '', function(err, html) {
+        if(err) {
+            console.log(err);
+            res.status(err.status).end();
+        }else {
+            res.set('Content-Type', 'text/html');
+            res.send(html);
+        }
+    });
+ }
+
+
+function noResource(req, res) {
 
     let values = '';
     res.status(404).render('./no-page', values, function(err, html) {
@@ -37,4 +52,5 @@ function end(req, res) {
 
 
 module.exports.main = main;
-module.exports.endSession = end;
+module.exports.error = error;
+module.exports.noResource = noResource;

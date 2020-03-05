@@ -20,6 +20,26 @@
 
         let spinner = new Spinner();
         let userInfo = null;
+        let _redirectToSignIn = function() {
+            let messageHtml = `<div class="tab-content" id="myTabContent">
+                                    <p>Sign Up Successful!</p>
+                                    <p style="margin-top: 4em;">Redirecting to Sign In <span id="time-left"></span></p>
+                              </div>`;
+            $("#line-sign-form").html(messageHtml);
+        
+            window.setInterval(function() {
+                    let timeLeft = $("#time-left").html();
+                    if(timeLeft === '...') {
+                        window.location= ("/auth/signin");
+                    } else if (timeLeft === '..'){
+                        $("#time-left").html('...');
+                    } else if (timeLeft === '.'){
+                        $("#time-left").html('..');
+                    } else if (timeLeft === ''){
+                        $("#time-left").html('.');
+                    }
+                }, 1000);
+        }
         let _signUpHelper = function(_user){
             $('#line-signin-link').remove();
             let signupHtml = `<div class="tab-content" id="myTabContent">                        
@@ -27,14 +47,8 @@
                                         <button id="line-signup-btn" class="btn btn-lg btn-secondary btn-block">Continue Sign Up</button>
                                     </div>
                                     <p style="margin-top: 2em;">by continuing, you agree to <a href="">Line's Policy & Terms of Use</a></p>
-                                    <hr>
-                                    <p style="margin-top: 1em;"><a href="/" >Not this time</a></p>
-                                
+                                    <hr><p style="margin-top: 1em;"><a href="/" >Not this time</a></p>                   
                               </div>`;
-            //$('#line-title').html("");
-            //$("#line-subtitle").html("Hello " + __user.claims.name);
-            //$("#line-sub-title").html(`<p style="margin-top: 1em;">You are not with us yet. Please join!</p>`);
-            //$("#line-user-image").attr("src", __user.claims.picture);
             $("#line-sign-form").html(signupHtml);
         
             $("#line-signup-btn").click((e) => {
@@ -48,7 +62,7 @@
                     console.log("--- signup res: ", response.status);
                     if(response.status === "success") {
                         console.log("--- signup successful");
-                        Line.redirect('/auth/signin');
+                        _redirectToSignIn();
                     }else if(response.status === "error") {
                         console.log("--- signup fail");
                         Line.redirect('/oops');
@@ -100,79 +114,3 @@
     }
     return main();
 });
-
-
-/*
-function LineSignUpUI(redirect) {
-
-    this._line = new Line();
-    this._redirect = redirect;
-    this._spinner = new Spinner();
-
-    //this.isSignIn();
-    this.signUpWithOAuthProvider();
-};
-
-
-
-LineSignUpUI.prototype.signUpWithOAuthProvider = function() {
-    let self = this;
-    let signUpGoogleButton = $("#sl-signup-google-btn");
-    signUpGoogleButton.click(function(e) {
-        e.preventDefault();
-        self._spinner.spin($(".card-container").get(0));
-        console.log("--- google signup clicked");
-
-        self._line.signInGoogleAuthGoogleOAuth((__result, __user) => {
-            self._spinner.stop();
-            if(__result.status == "signUpRequired") {
-                console.log("--- hello ",__user.claims.name, '. You need to sign up.');
-                self.__signUpHelper(__user);
-            }else if(__result.status == "signedUp"){
-                console.log("--- ", __user.claims.name, ' successfuly signed in with role:', __user.claims.role);
-                self._line.redirect('/service');
-            }else if(__result.status == "fail"){
-                console.log("--- error: ", __result);
-            }
-        });
-
-    });
-}
-
-LineSignUpUI.prototype.__signUpHelper = function(__user){
-    let self = this;
-    $('#line-signin-link').remove();
-    let signupHtml = `<div class="tab-content" id="myTabContent">                        
-                            <div class="tab-pane fade show active" role="tabpanel" style="margin-top: 3em;">
-                                <button id="line-signup-btn" class="btn btn-lg btn-secondary btn-block">Continue Sign Up</button>
-                            </div>
-                            <p style="margin-top: 2em;">by continuing, you agree to <a href="">Line's Policy & Terms of Use</a></p>
-                            <hr>
-                            <p style="margin-top: 1em;"><a href="/" >Not this time</a></p>
-                        
-                      </div>`;
-    $('#line-title').html("");
-    $("#line-subtitle").html("Hello " + __user.claims.name);
-    //$("#line-sub-title").html(`<p style="margin-top: 1em;">You are not with us yet. Please join!</p>`);
-    $("#line-user-image").attr("src", __user.claims.picture);
-    $("#line-sign-form").html(signupHtml);
-
-    $("#line-signup-btn").click((e) => {
-        e.preventDefault();
-        console.log("--- signup btn clicked");
-        self._line.signUpWithSocial("google", __user.claims.user_id, (res)=> {
-            console.log("--- signup res: ", res.status);
-            if(res.status === "success") {
-                console.log("--- signup successful");
-                self._line.redirect('/service');
-            }else if(res.status === "error") {
-                console.log("--- error: ", res.status);
-            }else if(res.status === "fail") {
-                console.log("--- error: ", res.status);
-            }
-        });
-    });
-}
-
-
-*/

@@ -7,6 +7,7 @@
     let eHandler = _eHanlder();
 
     eHandler.clickGoogleBtn();
+    eHandler.clickEmailPasswordBtn();
 
 })(function() {  // initialization
     function main() {
@@ -55,7 +56,7 @@
                 e.preventDefault();
                 spinner.spin($(".card-container").get(0));
                 console.log("--- signup btn clicked");
-                Line.signUpWithSocial("google", Line.getUserId())
+                Line.auth().signUpWithGoogleAuth("google", Line.getUserId())
                 .then((_response) => {
                     let response = JSON.parse(_response);
                     spinner.stop();
@@ -79,7 +80,40 @@
         }
 
         function eHandler() {}
-
+        let _responseHelperForGoogleOAuth = function(_response) {
+            let response = JSON.parse(_response);
+            console.log("--- result: ", response.status);
+            spinner.stop();
+            if(response.status == "signUpRequired") {
+                console.log("--- sign up required.");
+                _signUpHelper();
+            }else if(response.status == "signedUp"){
+                console.log("--- successfuly signed");
+                Line.redirect('/service');
+            }else if(response.status == "fail"){
+                console.log("--- error: ", __result);
+                Line.redirect('/oops');
+            }
+        }
+        let _responseHelper2 = function(_response) {
+            let response = JSON.parse(_response);
+            console.log("--- result: ", _response);
+            spinner.stop();
+            if(response.status == "sucess") {
+                console.log("--- sign up required.");
+                _signUpHelper();
+            }else if(response.status == "error"){
+                console.log("--- error: ", __result);
+            }
+            
+        }
+        let _errorHelper = function(error) {
+            console.log("--- error: ", error);
+            spinner.stop();
+            let code = error.code;
+            let message = error.message;
+            $('#line-signup-status').html(message);
+        }  
         eHandler.clickGoogleBtn = function() {
             let signUpGoogleButton = $("#sl-signup-google-btn");
             signUpGoogleButton.click(function(e) {
@@ -87,27 +121,23 @@
                 spinner.spin($(".card-container").get(0));
                 console.log("--- google signup clicked");
         
-                Line.signInGoogleAuthGoogleOAuth()
-                .then((_response) => {
-                    let response = JSON.parse(_response);
-                    console.log("--- result: ", response.status);
-                    spinner.stop();
-                    if(response.status == "signUpRequired") {
-                        console.log("--- sign up required.");
-                        _signUpHelper();
-                    }else if(response.status == "signedUp"){
-                        console.log("--- successfuly signed");
-                        Line.redirect('/service');
-                    }else if(response.status == "fail"){
-                        console.log("--- error: ", __result);
-                        Line.redirect('/oops');
-                    }
-                })
-                .catch((error) => {
-                    console.log("--- error: ", error);
-                    spinner.stop();
-                    Line.redirect('/oops')
-                })        
+                Line.auth().signInWithGoogleAuth()
+                .then(_responseHelperForGoogleOAuth)
+                .catch(_errorHelper)       
+            });
+        }
+        eHandler.clickEmailPasswordBtn = function() {
+            let signUpEmailPasswordBtn = $("#line-signup-btn");
+            signUpEmailPasswordBtn.click(function(e) {
+                e.preventDefault();
+                $('#line-signup-status').html("");
+                spinner.spin($(".card-container").get(0));
+                let email = $('#line-signup-email').val();
+                let password = $('#line-signup-pw').val();
+                let credential = {email: email, password: password}
+                Line.auth().signUpWithEmailPassword(credential)
+                .then(_responseHelper2)
+                .catch(_errorHelper)
             });
         }
         return eHandler;

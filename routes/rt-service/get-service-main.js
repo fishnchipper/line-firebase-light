@@ -6,7 +6,8 @@ function on(req, res, next) {
     
     //console.log(" ==== ", req.decodedSession);
     let decodedSession = req.decodedSession
-    let values = {firstInitial: decodedSession.name.charAt(0).toUpperCase()};
+    let displayName = (decodedSession.name)? decodedSession.name : decodedSession.email;
+    let values = {firstInitial: displayName.charAt(0).toUpperCase()};
 
     
     res.render('./service/index', values, function(err, html) {

@@ -6,6 +6,7 @@
     let eHandler = _eHanlder();
 
     eHandler.clickGoogleBtn();
+    eHandler.clickEmailPasswordBtn();
 
 })(function() {  // initialization
     function main() {
@@ -43,6 +44,34 @@
 
         function eHandler() {}
 
+        let _responseHelper = function(_response) {
+            let response = JSON.parse(_response);
+            console.log("--- result: ", response.status);
+            spinner.stop();
+            if(response.status == "signUpRequired") {
+                console.log("--- sign up required.");
+                _signUpHelper();
+            }else if(response.status == "signedUp"){
+                console.log("--- successfuly signed");
+                Line.redirect('/service');
+            }else if(response.status == "fail"){
+                console.log("--- error: ", __result);
+                //Line.redirect('/oops');
+            }
+        }
+        let _errorHelper = function(error) {
+            console.log("--- error: ", error);
+            spinner.stop();
+            let err;
+            if(error.responseText) {
+                err = JSON.parse(error.responseText);
+            } else {
+                err = error;
+            }
+            let code = err.code;
+            let message = err.message;
+            $('#line-signin-status').html(message);
+        }        
         eHandler.clickGoogleBtn = function() {
             let signInGoogleButton = $("#sl-signin-google-btn");
             signInGoogleButton.click(function(e) {
@@ -50,27 +79,22 @@
                 spinner.spin($(".card-container").get(0));
                 console.log("--- google signin clicked");
         
-                Line.signInGoogleAuthGoogleOAuth()
-                .then((_response) => {
-                    let response = JSON.parse(_response);
-                    console.log("--- result: ", response.status);
-                    spinner.stop();
-                    if(response.status == "signUpRequired") {
-                        console.log("--- sign up required.");
-                        _signUpHelper();
-                    }else if(response.status == "signedUp"){
-                        console.log("--- successfuly signed");
-                        Line.redirect('/service');
-                    }else if(response.status == "fail"){
-                        console.log("--- error: ", __result);
-                        Line.redirect('/oops');
-                    }
-                })
-                .catch((error) => {
-                    console.log("--- error: ", error);
-                    spinner.stop();
-                    Line.redirect('/oops')
-                })
+                Line.auth().signInWithGoogleAuth()
+                .then(_responseHelper)
+                .catch(_errorHelper)
+            });
+        }
+        eHandler.clickEmailPasswordBtn = function() {
+            let signInEmailPasswordBtn = $("#line-signin-btn");
+            signInEmailPasswordBtn.click(function(e) {
+                e.preventDefault();
+                spinner.spin($(".card-container").get(0));
+                let email = $('#line-signin-email').val();
+                let password = $('#line-signin-pw').val();
+                let credential = {email: email, password: password}
+                Line.auth().signInWithEmailPassword(credential)
+                .then(_responseHelper)
+                .catch(_errorHelper)
             });
         }
 

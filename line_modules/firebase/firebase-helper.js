@@ -47,8 +47,9 @@ let FirebaseAuthHelper = (function() {
 
             // Verify user is eligible for additional privileges.
             if (typeof decodedIdToken.email !== 'undefined' &&
-                typeof decodedIdToken.email_verified !== 'undefined' &&
-                decodedIdToken.email_verified) {
+                typeof decodedIdToken.email_verified !== 'undefined') //&&
+                //decodedIdToken.email_verified) 
+                {
 
                 // Only process if the user just signed in in the last 5 minutes.
                 if (new Date().getTime() / 1000 - decodedIdToken.auth_time < 5 * 60) {
@@ -59,7 +60,7 @@ let FirebaseAuthHelper = (function() {
                 reject('recentSignInRequired');
             } else {
                 // Return nothing.
-                reject('ineligible');
+                reject({code: 'email-vefication-failed', message: 'Email has not been vierified yet. Please verify your email delivered.'});
             }
           });
         });

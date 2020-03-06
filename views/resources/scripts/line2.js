@@ -39,38 +39,85 @@
         function api() {}
 
         api.hello = function() {console.log("hello from Line")}
-        api.signInGoogleAuthGoogleOAuth = function() {
+        api.auth = function() {
+            function method() {}
+            method.signInWithGoogleAuth = function() {
 
-            return new Promise((_resolve, _reject) => {
+                return new Promise((_resolve, _reject) => {
+    
+                    let provider = new firebase.auth.GoogleAuthProvider();
+                    firebase.auth().signInWithPopup(provider)
+                    .then((result) => {
+                        // User is signed in. Get the ID token from firebase
+                        console.log("=== user: ", result.user);
+                        _user = result.user;
+                        return result.user.getIdToken();
+                    }) 
+                    .then((idToken) => {
+                        // validate ID token and get session returned if okay.
+                        console.log("=== user trying sign-in: ", idToken);
+                        const csrfToken = Cookies.get('csrfToken');
+                        console.log("=== csrfToken: ", csrfToken);
+                        
+                        let obj = { idToken: idToken,  csrfToken:csrfToken};
+                        _callApiPromise("POST", "/auth/signin", obj, _resolve, _reject)
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });       
+                });
+            }
+            method.signUpWithGoogleAuth = function(_provider, _userId) {
+                return new Promise((_resolve, _reject) => {
+                    let obj = { provider: _provider, userId: _userId};
+                    _callApiPromise("POST", "/auth/signup", obj, _resolve, _reject);
+                });
+            }
+            method.signInWithEmailPassword = function(_credential) {
+                return new Promise((_resolve, _reject)=> {
+                    firebase.auth().signInWithEmailAndPassword(_credential.email, _credential.password)
+                    .then((result) => {
+                        // User is signed in. Get the ID token from firebase
+                        console.log("=== user: ", result.user);
+                        _user = result.user;
+                        return result.user.getIdToken();
+                    }) 
+                    .then((idToken) => {
+                        // validate ID token and get session returned if okay.
+                        console.log("=== user trying sign-in: ", idToken);
+                        const csrfToken = Cookies.get('csrfToken');
+                        console.log("=== csrfToken: ", csrfToken);
+                        
+                        let obj = { idToken: idToken,  csrfToken:csrfToken};
+                        _callApiPromise("POST", "/auth/signin", obj, _resolve, _reject)
+                    })
+                    .catch((err) => {
+                        console.log("=== err: ", err);
+                        _reject(err);
+                    });
+                });
+            }
+            method.signUpWithEmailPassword = function(_credential) {
+                return new Promise((_resolve, _reject)=> {
 
-                let provider = new firebase.auth.GoogleAuthProvider();
-                firebase.auth().signInWithPopup(provider)
-                .then((result) => {
-                    // User is signed in. Get the ID token from firebase
-                    console.log("=== user: ", result.user);
-                    _user = result.user;
-                    return result.user.getIdToken();
-                }) 
-                .then((idToken) => {
-                    // validate ID token and get session returned if okay.
-                    console.log("=== user trying sign-in: ", idToken);
-                    const csrfToken = Cookies.get('csrfToken');
-                    console.log("=== csrfToken: ", csrfToken);
                     
-                    let obj = { idToken: idToken,  csrfToken:csrfToken};
-                    _callApiPromise("POST", "/auth/signin", obj, _resolve, _reject)
-                })
-                .catch((err) => {
-                    reject(err);
-                });       
-            });
+                    firebase.auth().createUserWithEmailAndPassword(_credential.email, _credential.password)
+                    .then((result) => {
+                        // User is signed in. Get the ID token from firebase
+                        console.log("=== user: ", result.user);
+                        let obj = { provider: 'google', userId: result.user.uid};
+                        _callApiPromise("POST", "/auth/signup", obj, _resolve, _reject);
+                    })
+                    .catch((err) => {
+                        _reject(err);
+                    });
+                    
+                });
+                
+            }
+            return method;
         }
-        api.signUpWithSocial = function(_provider, _userId) {
-            return new Promise((_resolve, _reject) => {
-                let obj = { provider: _provider, userId: _userId};
-                _callApiPromise("POST", "/auth/signup", obj, _resolve, _reject);
-            });
-        }
+        
         api.signOut = function() {
             return new Promise((_resolve, _reject) => {
                 _callApiPromise("POST", "/auth/signout", {}, _resolve, _reject);

@@ -48,7 +48,7 @@ function on(req, res, next) {
   .catch((err) => {
     // Tell client to redirect to sign up page.
     console.log("==== reject reason: ", err);
-    res.status(401).send('UNAUTHORIZED REQUEST!');
+    res.status(401).send(JSON.stringify(err));
   })
 
 

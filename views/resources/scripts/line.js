@@ -8,7 +8,6 @@
 
 })(function(){
 
-    let _user = null;
     const _url = ___LINE___.url;
 
     // Initialize Firebase
@@ -50,7 +49,6 @@
                     .then((result) => {
                         // User is signed in. Get the ID token from firebase
                         console.log("=== user: ", result.user);
-                        _user = result.user;
                         return result.user.getIdToken();
                     }) 
                     .then((idToken) => {
@@ -67,9 +65,9 @@
                     });       
                 });
             }
-            method.signUpWithGoogleAuth = function(_provider, _userId) {
+            method.signUpWithGoogleAuth = function() {
                 return new Promise((_resolve, _reject) => {
-                    let obj = { provider: _provider, userId: _userId};
+                    let obj = { userId: firebase.auth().currentUser.uid};
                     _callApiPromise("POST", "/auth/signup", obj, _resolve, _reject);
                 });
             }
@@ -99,13 +97,13 @@
             }
             method.signUpWithEmailPassword = function(_credential) {
                 return new Promise((_resolve, _reject)=> {
-
                     
                     firebase.auth().createUserWithEmailAndPassword(_credential.email, _credential.password)
                     .then((result) => {
                         // User is signed in. Get the ID token from firebase
                         console.log("=== user: ", result.user);
-                        let obj = { provider: 'google', userId: result.user.uid};
+                        _user = result.user;
+                        let obj = { userId: result.user.uid};
                         _callApiPromise("POST", "/auth/signup", obj, _resolve, _reject);
                     })
                     .catch((err) => {
@@ -149,8 +147,8 @@
                 }, null);
                 */
         }
-        api.getUserId = function() {
-            return _user.uid;
+        api.getUser = function() {
+            return firebase.auth().currentUser;
         }
 
         return api;

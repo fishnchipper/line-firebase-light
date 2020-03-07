@@ -56,7 +56,7 @@
                 e.preventDefault();
                 spinner.spin($(".card-container").get(0));
                 console.log("--- signup btn clicked");
-                Line.auth().signUpWithGoogleAuth("google", Line.getUserId())
+                Line.auth().signUpWithGoogleAuth()
                 .then((_response) => {
                     let response = JSON.parse(_response);
                     spinner.stop();
@@ -99,7 +99,7 @@
             let response = JSON.parse(_response);
             console.log("--- result: ", _response);
             spinner.stop();
-            if(response.status == "sucess") {
+            if(response.status == "success") {
                 console.log("--- sign up required.");
                 _signUpHelper();
             }else if(response.status == "error"){

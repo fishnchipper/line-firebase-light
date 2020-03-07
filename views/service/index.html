@@ -21,7 +21,7 @@
 
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">line</a>
+        <a class="navbar-brand" id="line-service-main" href="#">line</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -55,10 +55,11 @@
           </form>
 
           <div class="dropdown">
-              <button class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <button class="btn  dropdown-toggle" id="user-image" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span user-letters={{ firstInitial }}></span>
               </button>
               <div class="dropdown-menu dropdown-menu-lg-right" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" id="line-profile-btn" href="#">Profile</a>
                 <a class="dropdown-item" id="line-signout-btn" href="#">Sign Out</a>
               </div>
           </div>
@@ -89,7 +90,7 @@
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
     <script src="/scripts/environment.js"></script>   
     <script src="/scripts/firebaseconfig.js"></script>  
-    <script src="/scripts/line.js"></script>
+    <script src="/scripts/dist/line.js"></script>
 		<script src="/scripts/line-service-ui.js"></script>
 
 

@@ -61,9 +61,11 @@ app.get('/oops', routeMain.error);
 app.use('/auth', routeAuth.router);
 
 // view service pages
+// allow access with valid session only
 app.use('/service', checkSession.on, routeService.router);
 
 // add RESTFul APIs below
+// allow access with valid session only
 app.use('/api', checkSession.on, routeApi.router);
 
 // end session for other request with erro message return

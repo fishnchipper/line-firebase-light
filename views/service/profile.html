@@ -9,11 +9,40 @@
     <!-- style -->
     <style type="text/css">
 
+        .container{
+            padding:5%;
+        }
+        .container .img{
+            text-align:center;
+        }
+        .container .details{
+            border-left:3px solid #ded4da;
+        }
+        .container .details p{
+            font-size:15px;
+            //font-weight:bold;
+        }
+
     </style>
 
     <!-- Header -->
-
-
+    
+    <div class="container">
+    <div class="row">
+        <div class="col-md-6 img">
+            <img src={{userImage}}  alt="" class="img-rounded">
+        </div>
+        <div class="col-md-6 details">
+            <blockquote>
+            <h5>{{ userName }}</h5>
+            <small>ID: <cite title="Source Title">{{userId}}<i class="icon-map-marker"></i></cite></small>
+            </blockquote>
+            <p>
+            {{ userEmail }} <small>(<cite id="user-email-verified" status={{ userEmailVerified }}></cite>)</small><br>
+            </p>
+        </div>
+    </div>
+    </div>
 
     <!-- Sub Content -->
     <div id="content-sub"></div>
@@ -48,11 +77,18 @@
      
 <script type="text/javascript">
     (function() { 
+        let hello = Line.hello();
         let spinner = new Spinner();
                 
         // control codes go below
         //
- 
+
+        let isEmailVerified = $('#user-email-verified').attr("status");
+        if(isEmailVerified === "true") {
+            $('#user-email-verified').html(" verified ");
+        }else {
+            $('#user-email-verified').html(" unverified ");
+        }
 
         //
         // end of control codes

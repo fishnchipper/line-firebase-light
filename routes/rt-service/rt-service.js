@@ -4,7 +4,7 @@ let express = require('express');
 let router = express.Router();
 
 let getServiceMain = require('./get-service-main');
-let getServiceSub = require('./get-service-page');
+let getUserProfile = require('./get-user-profile');
 
 
 
@@ -14,9 +14,9 @@ let getServiceSub = require('./get-service-page');
 router.get('/', getServiceMain.on);
 
 /**
- * get /service/page 
+ * get /user/profile 
  */
-router.get('/page', getServiceSub.on);
+router.get('/user/profile', getUserProfile.on);
 
 
 // close session 

@@ -18,7 +18,7 @@
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.NONE);
 
     // for csrf token
-    let randomString = [...Array(32)].map(i=>(~~(Math.random()*36)).toString(36)).join('');
+    let randomString = ((Math.random()*Date.now())*Math.pow(10,5)).toString(16);
     Cookies.set("csrfToken", randomString, { expires: 1, secure: true});
 
     function _callApiPromise(_callType, _api, _obj, _resolve, _reject) {
@@ -38,7 +38,7 @@
 
         function api() {}
 
-        api.hello = function() {console.log("hello from Line")}
+        api.hello = function() {return "Hello from Line"}
         api.auth = function() {
             function method() {}
             method.signInWithGoogleAuth = function() {
@@ -117,7 +117,15 @@
             }
             return method;
         }
-        
+        api.view = function() {
+            function method() {}
+            method.getBlock = function(_path){
+                return new Promise((_resolve, _reject) => {
+                    _callApiPromise("GET", _path, {}, _resolve, _reject);
+                });
+            }
+            return method;
+        }
         api.signOut = function() {
             return new Promise((_resolve, _reject) => {
                 _callApiPromise("POST", "/auth/signout", {}, _resolve, _reject);

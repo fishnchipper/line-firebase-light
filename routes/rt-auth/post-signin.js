@@ -23,7 +23,7 @@ function on(req, res, next) {
   authAdapter.verifyIdToken(idToken)
   .then((user) => {
     console.log("=== verified user: ", user);
-    if(user.signUpStatus === true) {
+    if(user.line_signup_status === true) {
 
       // user is signed up. proceed with sign in session
       authAdapter.createSessionCookie(idToken, expiresIn)

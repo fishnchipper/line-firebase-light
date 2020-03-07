@@ -67,9 +67,9 @@ let FirebaseAuthHelper = (function() {
     }
 
     /**
-     * check signUpStatus
+     * check line_signup_status
      * 
-     * @param {string} __uid __uid to check signUpStatus
+     * @param {string} __uid __uid to check line_signup_status
      * @return {Promise<string>} A promise fulfilled with status; otherwise, a rejected promise
      */
     FirebaseAuthHelper.prototype.signUpStatus = function(__uid) {
@@ -79,7 +79,7 @@ let FirebaseAuthHelper = (function() {
             let user = userRecord.toJSON();
             // See the UserRecord reference doc for the contents of userRecord.
             console.log('Successfully fetched user data:', user);
-            if(user.customClaims.signUpStatus === true) {
+            if(user.customClaims.line_signup_status === true) {
               resolve('signedUp');
             }else {
               reject('signUpRequired')
@@ -94,15 +94,15 @@ let FirebaseAuthHelper = (function() {
 
 
     /**
-     * set signUpStatus user claim
+     * set line_signup_status user claim
      * 
-     * @param {string} __uid __uid to set signUpStatus user claim.
+     * @param {string} __uid __uid to set line_signup_status user claim.
      * @return {Promise<string>} A promise fulfilled with status; otherwise, a rejected promise
      */
     FirebaseAuthHelper.prototype.signUpUser = function(__uid) {
       return new Promise((resolve, reject) => {
 
-        ___firebaseAdmin___.auth().setCustomUserClaims(__uid, {signUpStatus: true})
+        ___firebaseAdmin___.auth().setCustomUserClaims(__uid, {line_signup_status: true})
         .then(() => {
           // The new custom claims will propagate to the user's ID token the
           // next time a new one is issued.

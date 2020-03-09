@@ -1,5 +1,5 @@
 /**
- * 
+ * hello
  */
 
 (function(factory) {
@@ -33,13 +33,20 @@
         .fail(_reject);
     }
 
+    /**
+     * sign in using Google Auth
+     *
+     * @return {Promise<status>} A promise fulfilled with status; otherwise, a rejected promise 
+     */
     function main() {
 
         function api() {}
 
         api.hello = function() {return "Hello from Line"}
+
         api.auth = function() {
             function method() {}
+/**  method.signInWithGoogleAuth */
             method.signInWithGoogleAuth = function() {
 
                 return new Promise((_resolve, _reject) => {
@@ -113,6 +120,21 @@
                 });
                 
             }
+            method.sendEmailVerification = function() {
+                return new Promise((_resolve, _reject)=> {
+                    firebase.auth().onAuthStateChanged(function(user) {
+                        console.log("==== user: ", user);
+                        if (user) {
+                            // User is signed in.
+                            console.log("==== user: ", user);
+                            user.sendEmailVerification().then(_resolve).catch(_reject);
+                        } else {
+                            // No user is signed in.
+                            _reject({message:"fail to send verification email."});
+                        }
+                    });
+                });
+            }
             return method;
         }
         api.view = function() {
@@ -131,24 +153,6 @@
         }
         api.redirect = function(_redirectPath) {
             window.location.assign(_redirectPath);
-            /*
-            return new Promise((__resolve, __reject) => {
-                _callApiPromise("GET", "/redirect" + _redirectPath, __resolve, __reject);
-            });
-            */
-            /*
-            let url = _url + redirect;
-            console.log("=== ", url);
-            _callApiPromise("GET", url, "", (data)=> {
-
-                    //console.log("=== ", data);
-                    window.history.pushState("object or string", "Page Title", redirect);
-                    window.document.write(data);
-                }, null);
-                */
-        }
-        api.getUser = function() {
-            return firebase.auth().currentUser;
         }
 
         return api;

@@ -15,6 +15,16 @@
         .container .img{
             text-align:center;
         }
+        .container .img-rounded {
+            display: block;
+            width: 140px;
+            height: 140px;
+            background: #E6E7ED;
+            -moz-border-radius: 20px;
+            -webkit-border-radius: 20px;
+            background-position:50% 50%;
+            background-repeat:no-repeat;   
+        }
         .container .details{
             border-left:3px solid #ded4da;
         }
@@ -82,13 +92,24 @@
                 
         // control codes go below
         //
-
         let isEmailVerified = $('#user-email-verified').attr("status");
         if(isEmailVerified === "true") {
             $('#user-email-verified').html(" verified ");
         }else {
-            $('#user-email-verified').html(" unverified ");
+            $('#user-email-verified').html("<a>unverified</a>");
+            $('#user-email-verified').click(function(e) {
+                e.preventDefault();
+                Line.auth().sendEmailVerification()
+                .then(()=>{
+                    $('#user-email-verified').html("verification email sent!");
+                })
+                .catch((error)=>{
+                    $('#user-email-verified').html(error.message);
+                });
+            });
         }
+
+
 
         //
         // end of control codes

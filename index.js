@@ -32,7 +32,7 @@ let routeService = require('./routes/rt-service/rt-service');
 let routeApi = require('./routes/rt-api/rt-api');
 
 let app = express();
-const APPNAME = "line";
+const APPNAME = "line-firebase";
 const PORT = 65000;
 const VERSION = '0.1.0';
 

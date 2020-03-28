@@ -22,7 +22,6 @@ function main(req, res, next) {
 
 
 function error(req, res, next) {
-
     // display main page
     res.status(500).render('./error', '', function(err, html) {
         if(err) {

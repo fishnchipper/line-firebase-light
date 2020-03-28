@@ -9,14 +9,16 @@ let getUserProfile = require('./get-user-profile');
 
 
 /**
- * get /service 
+ * /service 
  */
-router.get('/', getServiceMain.on);
+router.route('/')
+      .get(getServiceMain.on);
 
 /**
- * get /user/profile 
+ * /service/user/profile 
  */
-router.get('/user/profile', getUserProfile.on);
+router.route('/user/profile')
+      .get(getUserProfile.on);
 
 
 // close session 

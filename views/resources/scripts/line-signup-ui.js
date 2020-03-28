@@ -56,7 +56,7 @@
                 e.preventDefault();
                 spinner.spin($(".card-container").get(0));
                 console.log("--- signup btn clicked");
-                Line.auth().signUpWithGoogleAuth()
+                Line_Firebase.auth().signUpWithGoogleAuth()
                 .then((_response) => {
                     let response = JSON.parse(_response);
                     spinner.stop();
@@ -66,15 +66,15 @@
                         _redirectToSignIn();
                     }else if(response.status === "error") {
                         console.log("--- signup fail");
-                        Line.redirect('/oops');
+                        Line_Firebase.redirect('/oops');
                     }else {
-                        Line.redirect('/oops');
+                        Line_Firebase.redirect('/oops');
                     }
                 })
                 .catch((error) => {
                     console.log("--- error: ", error);
                     spinner.stop();
-                    Line.redirect('/oops')
+                    Line_Firebase.redirect('/oops')
                 }) 
             });
         }
@@ -89,10 +89,10 @@
                 _signUpHelper();
             }else if(response.status == "signedUp"){
                 console.log("--- successfuly signed");
-                Line.redirect('/service');
+                Line_Firebase.redirect('/service');
             }else if(response.status == "fail"){
                 console.log("--- error: ", __result);
-                Line.redirect('/oops');
+                Line_Firebase.redirect('/oops');
             }
         }
         let _responseHelper2 = function(_response) {
@@ -121,7 +121,7 @@
                 spinner.spin($(".card-container").get(0));
                 console.log("--- google signup clicked");
         
-                Line.auth().signInWithGoogleAuth()
+                Line_Firebase.auth().signInWithGoogleAuth()
                 .then(_responseHelperForGoogleOAuth)
                 .catch(_errorHelper)       
             });
@@ -135,7 +135,7 @@
                 let email = $('#line-signup-email').val();
                 let password = $('#line-signup-pw').val();
                 let credential = {email: email, password: password}
-                Line.auth().signUpWithEmailPassword(credential)
+                Line_Firebase.auth().signUpWithEmailPassword(credential)
                 .then(_responseHelper2)
                 .catch(_errorHelper)
             });

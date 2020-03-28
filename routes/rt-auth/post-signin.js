@@ -1,7 +1,7 @@
 
 
-let line = require('../../line_modules/line-firebase');
-let authAdapter = line.createAuthAdapter();
+let lineFirbase = require('../../line_modules/line-firebase');
+let authAdapter = lineFirbase.createAuthAdapter();
 
 function on(req, res, next) {
     
@@ -50,10 +50,6 @@ function on(req, res, next) {
     console.log("==== reject reason: ", err);
     res.status(401).send(JSON.stringify(err));
   })
-
-
-
-
 }
 
 module.exports.on= on;

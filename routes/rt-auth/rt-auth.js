@@ -4,7 +4,6 @@ let express = require('express');
 let router = express.Router();
 
 
-let checkSession = require('../../middleware/check-session');
 let checkSessionForAuth = require('../../middleware/check-session-forauth');
 let getSignIn = require('./get-signin');
 let getSignUp = require('./get-signup');
@@ -13,28 +12,25 @@ let postSignIn = require('./post-signin');
 let postSignOut = require('./post-signout');
 
 
+/**
+ * /auth/signin
+ */
+router.route('/signin')
+      .get(checkSessionForAuth.on, getSignIn.on)
+      .post(postSignIn.on);
 
 /**
- *  views
+ * /auth/signup
  */
-
-// get view: /signin 
-router.get('/signin', checkSessionForAuth.on, getSignIn.on);
-
-// get view: /signup 
-router.get('/signup', checkSessionForAuth.on, getSignUp.on);
-
+router.route('/signup')
+      .get(checkSessionForAuth.on, getSignUp.on)
+      .post(postSignUp.on);
 
 /**
- *  APIs
+ * /auth/signout
  */
-router.post('/signin', postSignIn.on);
-
-router.post('/signout', postSignOut.on);
-
-/* TODO: add session check to /signup */
-router.post('/signup', postSignUp.on);
-
+router.route('/signout')
+      .post(postSignOut.on);
 
 
 // close session 

@@ -35,14 +35,14 @@
         eHandler.clickSignOutBtn = function() {
             $('#line-signout-btn').click((e)=>{
                 e.preventDefault();
-                Line.signOut()
+                Line_Firebase.signOut()
                 .then((res) => {
                     console.log("---- res: ", res);
-                    Line.redirect("/");
+                    Line_Firebase.redirect("/");
                 })
                 .catch((err) => {
                     console.log("--- error: ", err);
-                    Line.redirect("/oops")
+                    Line_Firebase.redirect("/oops")
                 });
             });
         }
@@ -50,7 +50,7 @@
             $('#line-profile-btn').click((e)=>{
                 e.preventDefault();
                 console.log("--- profile btn clicked. ");
-                Line.view().getBlock("/service/user/profile")
+                Line_Firebase.view().getBlock("/service/user/profile")
                 .then((block)=> {
                     $('#content-main').html(block);
                 })

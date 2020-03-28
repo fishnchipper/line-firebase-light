@@ -1,6 +1,6 @@
 
-let line = require('../../line_modules/line-firebase');
-let authAdapter = line.createAuthAdapter();
+let lineFirbase = require('../../line_modules/line-firebase');
+let authAdapter = lineFirbase.createAuthAdapter();
 
 
 function on(req, res, next) {

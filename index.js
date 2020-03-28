@@ -1,4 +1,3 @@
-
 /**
  * App
  */
@@ -16,12 +15,15 @@ let https = require('https'),
  */
 const lineFirebase = require('./line_modules/line-firebase');
 const lineFirebaseOptions = {
+  // firebase database url
   databaseURL: "https://line-7e593.firebaseio.com",
+  // firebase Admin SDK private key 
   keyFilename: './environment/firebase-serverkey.json'
 };
-// use firebase as back-end db
 lineFirebase.setup(lineFirebaseOptions);
+// init for firebase Authentication access
 lineFirebase.initAuthService();
+// init for firebase Database access
 lineFirebase.initDBService();
 
 /**
@@ -36,7 +38,6 @@ let routeMain = require('./routes/rt-main'),
  */
 let middleware = require('./middleware/check-token');
 let checkSession = require('./middleware/check-session');
-
 
 
 let app = express();
@@ -77,9 +78,9 @@ const swaggerOptions = {
   apis: ['./models/*.js', './routes/*/*.js'],
 };
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
-
 // openapi 3.x docs
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {customCss: '.swagger-ui .topbar { display: none }'}));
+
 
 // for security purpose
 app.use(helmet());
@@ -107,11 +108,10 @@ app.use('/auth', routeAuth.router);
 // allow access with valid session only
 app.use('/service', checkSession.on, routeService.router);
 
-// add your RESTFul APIs here
+// add your RESTFul APIs here if any
 //
 let routeApiXXXV1 = require('./routes/rt-api-xxx-v1/rt-api-xxx-v1');
 app.use('/api/xxx/v1', checkSession.on, routeApiXXXV1.router);
-
 
 //
 // end of your RESTFul APIs

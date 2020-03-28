@@ -87,7 +87,7 @@
      
 <script type="text/javascript">
     (function() { 
-        let hello = Line.hello();
+        let hello = Line_Firebase.hello();
         let spinner = new Spinner();
                 
         // control codes go below
@@ -99,7 +99,7 @@
             $('#user-email-verified').html("<a>unverified</a>");
             $('#user-email-verified').click(function(e) {
                 e.preventDefault();
-                Line.auth().sendEmailVerification()
+                Line_Firebase.auth().sendEmailVerification()
                 .then(()=>{
                     $('#user-email-verified').html("verification email sent!");
                 })

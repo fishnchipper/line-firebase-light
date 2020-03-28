@@ -4,11 +4,9 @@
 
 (function(factory) {
 
-    window.Line = factory();
+    window.Line_Firebase = factory();
 
 })(function(){
-
-    const _url = ___LINE___.url;
 
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
@@ -46,7 +44,6 @@
 
         api.auth = function() {
             function method() {}
-/**  method.signInWithGoogleAuth */
             method.signInWithGoogleAuth = function() {
 
                 return new Promise((_resolve, _reject) => {

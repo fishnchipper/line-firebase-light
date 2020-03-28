@@ -1,14 +1,25 @@
 {
-  "name": "line",
+  "name": "line-firebase",
   "version": "0.1.0",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fishnchipper/line-firebase"
+  },
   "description": "A NodeJS Express app shell",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
+  "config": {
+    "port": "65000"
+  },
   "keywords": [],
-  "author": "Infra/Ops at Network Services, NTT (Australia)",
-  "license": "ISC",
+  "author": {
+    "name": "Seung Lee",
+    "email": "seung.lee@fishnchipper.io"
+  },
+  "license": "MIT",
   "dependencies": {
     "@google-cloud/firestore": "^3.5.0",
     "bluebird": "^3.5.5",
@@ -17,6 +28,8 @@
     "firebase-admin": "^8.9.2",
     "helmet": "^3.21.0",
     "mustache-express": "^1.2.8",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4"
   }
 }

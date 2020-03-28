@@ -3,8 +3,6 @@
  */
 "use strict";
 
-let __user__ = require('../models/user');
-
 let FirebaseAuthHelper = (function() {
     /**
      * @constructor

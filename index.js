@@ -11,45 +11,88 @@ let https = require('https'),
     cookieParser = require('cookie-parser'),
     mustacheExpress = require('mustache-express');
 
+/**
+ * Firebase service setup
+ */
+const lineFirebase = require('./line_modules/line-firebase');
+const lineFirebaseOptions = {
+  databaseURL: "https://line-7e593.firebaseio.com",
+  keyFilename: './environment/firebase-serverkey.json'
+};
+// use firebase as back-end db
+lineFirebase.setup(lineFirebaseOptions);
+lineFirebase.initAuthService();
+lineFirebase.initDBService();
+
+/**
+ * Routes
+ */
+let routeMain = require('./routes/rt-main'),
+    routeAuth = require('./routes/rt-auth/rt-auth'),
+    routeService = require('./routes/rt-service/rt-service');
+
+/**
+ * Middlewares
+ */
 let middleware = require('./middleware/check-token');
 let checkSession = require('./middleware/check-session');
 
-/**
- * init firebase service access
- */
-let line = require('./line_modules/line');
-// use firebase as back-end db
-line.initAuthService('firebase');
-line.initDBService('firebase');
 
-
-/**
- * routes
- */
-let routeMain = require('./routes/rt-main');
-let routeAuth = require('./routes/rt-auth/rt-auth');
-let routeService = require('./routes/rt-service/rt-service');
-let routeApi = require('./routes/rt-api/rt-api');
 
 let app = express();
-const APPNAME = "line-firebase";
-const PORT = 65000;
-const VERSION = '0.1.0';
+const APPNAME = process.env.npm_package_name;
+const PORT = process.env.npm_package_config_port;
+const VERSION = process.env.npm_package_version;
 
+
+/**
+* swagger setup
+*/
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDefinition = {
+  openapi: "3.0.0",
+  info: {
+    title: "line-firebase",
+    version: VERSION,
+    description:
+      "line-firebase is a NodeJS + Express App shell which can be used as ....",
+    license: {
+      name: "MIT",
+      url: "https://github.com/fishnchipper/line-firebase/blob/master/LICENSE"
+    },
+    contact: {
+      name: "GitHub",
+      url: "https://github.com/fishnchipper/line-firebase"
+    }
+  },
+  servers: [
+    {
+      url: "https://localhost:" + PORT + "/api"
+    }
+  ]
+};
+const swaggerOptions = {
+  swaggerDefinition,
+  apis: ['./models/*.js', './routes/*/*.js'],
+};
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
+// openapi 3.x docs
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {customCss: '.swagger-ui .topbar { display: none }'}));
 
 // for security purpose
 app.use(helmet());
 
 app.use(bodyParser.json());
 
-// register template engine
+// register server-side template engine
 app.engine('html', mustacheExpress());
 app.set('views', './views');
 app.set('view engine', 'html');
 
 // url access granted
 app.use(cookieParser());
-console.log("----- ", __dirname);
 app.use('/', express.static(path.join(__dirname + '/views/resources')));
 
 // main page
@@ -64,9 +107,14 @@ app.use('/auth', routeAuth.router);
 // allow access with valid session only
 app.use('/service', checkSession.on, routeService.router);
 
-// add RESTFul APIs below
-// allow access with valid session only
-app.use('/api', checkSession.on, routeApi.router);
+// add your RESTFul APIs here
+//
+let routeApiXXXV1 = require('./routes/rt-api-xxx-v1/rt-api-xxx-v1');
+app.use('/api/xxx/v1', checkSession.on, routeApiXXXV1.router);
+
+
+//
+// end of your RESTFul APIs
 
 // end session for other request with erro message return
 app.use(routeMain.noResource);

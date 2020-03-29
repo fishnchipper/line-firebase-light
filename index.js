@@ -46,40 +46,6 @@ const PORT = process.env.npm_package_config_port;
 const VERSION = process.env.npm_package_version;
 
 
-/**
-* swagger setup
-*/
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-const swaggerDefinition = {
-  openapi: "3.0.0",
-  info: {
-    title: "line-firebase",
-    version: VERSION,
-    description:
-      "line-firebase is a NodeJS + Express App shell which can be used as ....",
-    license: {
-      name: "MIT",
-      url: "https://github.com/fishnchipper/line-firebase/blob/master/LICENSE"
-    },
-    contact: {
-      name: "GitHub",
-      url: "https://github.com/fishnchipper/line-firebase"
-    }
-  },
-  servers: [
-    {
-      url: "https://localhost:" + PORT + "/api"
-    }
-  ]
-};
-const swaggerOptions = {
-  swaggerDefinition,
-  apis: ['./models/*.js', './routes/*/*.js'],
-};
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
-// openapi 3.x docs
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {customCss: '.swagger-ui .topbar { display: none }'}));
 
 
 // for security purpose
@@ -101,6 +67,7 @@ app.get('/', routeMain.main);
 app.get('/404', routeMain.noResource);
 app.get('/oops', routeMain.error);
 
+
 // user auth
 app.use('/auth', routeAuth.router);
 
@@ -108,10 +75,46 @@ app.use('/auth', routeAuth.router);
 // allow access with valid session only
 app.use('/service', checkSession.on, routeService.router);
 
+
 // add your RESTFul APIs here if any
 //
-let routeApiXXXV1 = require('./routes/rt-api-xxx-v1/rt-api-xxx-v1');
-app.use('/api/xxx/v1', checkSession.on, routeApiXXXV1.router);
+    // >> swagger setup
+    const swaggerJSDoc = require('swagger-jsdoc');
+    const swaggerUi = require('swagger-ui-express');
+    const swaggerDefinition = {
+      openapi: "3.0.0",
+      info: {
+        title: "line-firebase",
+        version: VERSION,
+        description:
+          "line-firebase is a NodeJS + Express App shell which can be used as ....",
+        license: {
+          name: "MIT",
+          url: "https://github.com/fishnchipper/line-firebase/blob/master/LICENSE"
+        },
+        contact: {
+          name: "GitHub",
+          url: "https://github.com/fishnchipper/line-firebase"
+        }
+      },
+      servers: [
+        {
+          url: "https://localhost:" + PORT + "/api/xxx/v1"
+        }
+      ]
+    };
+    const swaggerOptions = {
+      swaggerDefinition,
+      apis: ['./models/*.js', './routes/*/*.js'],
+    };
+    const swaggerSpec = swaggerJSDoc(swaggerOptions);
+    // openapi 3.x docs 
+    app.use('/api/docs', checkSession.on, swaggerUi.serve, swaggerUi.setup(swaggerSpec, {customCss: '.swagger-ui .topbar { display: none }'}));
+
+
+    // your defined api
+    let routeApiXXXV1 = require('./routes/rt-api-xxx-v1/rt-api-xxx-v1');
+    app.use('/api/xxx/v1', checkSession.on, routeApiXXXV1.router);
 
 //
 // end of your RESTFul APIs

@@ -92,23 +92,6 @@
                 
         // control codes go below
         //
-        let isEmailVerified = $('#user-email-verified').attr("status");
-        if(isEmailVerified === "true") {
-            $('#user-email-verified').html(" verified ");
-        }else {
-            $('#user-email-verified').html("<a>unverified</a>");
-            $('#user-email-verified').click(function(e) {
-                e.preventDefault();
-                Line_Firebase.auth().sendEmailVerification()
-                .then(()=>{
-                    $('#user-email-verified').html("verification email sent!");
-                })
-                .catch((error)=>{
-                    $('#user-email-verified').html(error.message);
-                });
-            });
-        }
-
 
 
         //

@@ -9,7 +9,7 @@
 function main(req, res, next) {
 
    // display main page
-   res.render('./main', '', function(err, html) {
+   res.render('./main', { description: process.env.npm_package_description, version: process.env.npm_package_version }, function(err, html) {
        if(err) {
            console.log(err);
            res.status(err.status).end();

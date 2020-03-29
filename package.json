@@ -1,12 +1,12 @@
 {
   "name": "line-firebase",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/fishnchipper/line-firebase"
   },
-  "description": "A NodeJS Express app shell",
+  "description": "A NodeJS-Express app shell with Firebase Authentication",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"

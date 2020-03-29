@@ -1,7 +1,7 @@
-# Under development ...
+![version](https://badgen.net/badge/version/v0.1.1/orange)  ![AppVeyor](https://img.shields.io/appveyor/build/gam4it/line-firebase)
 
 
-# Line
+# line-firebase
 
 Line is a NodeJS + Express App shell which can be used for web front application or microservice with RESTful API interfaces. 
 

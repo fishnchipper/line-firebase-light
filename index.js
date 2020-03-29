@@ -24,7 +24,7 @@ lineFirebase.setup(lineFirebaseOptions);
 // init for firebase Authentication access
 lineFirebase.initAuthService();
 // init for firebase Database access
-lineFirebase.initDBService();
+//lineFirebase.initDBService();
 
 /**
  * Routes
@@ -36,7 +36,7 @@ let routeMain = require('./routes/rt-main'),
 /**
  * Middlewares
  */
-let middleware = require('./middleware/check-token');
+let checkSessionToken = require('./middleware/check-token');
 let checkSession = require('./middleware/check-session');
 
 
@@ -114,7 +114,7 @@ app.use('/service', checkSession.on, routeService.router);
 
     // your defined api
     let routeApiXXXV1 = require('./routes/rt-api-xxx-v1/rt-api-xxx-v1');
-    app.use('/api/xxx/v1', checkSession.on, routeApiXXXV1.router);
+    app.use('/api/xxx/v1', checkSessionToken.on, routeApiXXXV1.router);
 
 //
 // end of your RESTFul APIs

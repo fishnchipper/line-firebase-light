@@ -7,7 +7,7 @@
  * @param {*} res 
  * @param {*} next 
  */
-function checkToken(req, res, next) {
+function on(req, res, next) {
 
   console.log(">>>> req: ", req.headers);
   let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
@@ -32,4 +32,4 @@ function checkToken(req, res, next) {
   }
 };
 
-module.exports.checkToken = checkToken;
+module.exports.on = on;

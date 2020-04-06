@@ -11,6 +11,7 @@
     eHandler.clickBrandName();
     eHandler.clickSignOutBtn();
     eHandler.clickProfileBtn();
+    eHandler.clickApiDocBtn();
 
 })(function() { // initialization
     function main() {
@@ -57,6 +58,13 @@
                 .catch((error)=> {
                     console.log("--- error: ", error);
                 })
+            });
+        }
+        eHandler.clickApiDocBtn = function() {
+            $('#line-apidoc-btn').click((e)=>{
+                e.preventDefault();
+                console.log("--- api doc btn clicked. ");
+                Line_Firebase.redirect("/api/docs");
             });
         }
         return eHandler;

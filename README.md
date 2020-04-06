@@ -33,19 +33,6 @@ If you are going to use the Firebase project you created for `OAuth 2.0 and Open
 //lineFirebase.initDBService();
 ```
 
-## Where to start
-
-
-1. Install dependent packages
-```
-$ npm install
-```
-
-2. Run the app
-```
-$ npm start
-==> line-firebase - (v0.1.1) https://localhost:65000
-```
 
 
 ## How to add your RESTFul APIs
@@ -176,4 +163,17 @@ $ npm start
 
 
 
+# Where to start
+
+
+1. Install dependent packages
+```
+$ npm install
+```
+
+2. Run the app
+```
+$ npm start
+==> line-firebase - (v0.1.1) https://localhost:65000
+```
 

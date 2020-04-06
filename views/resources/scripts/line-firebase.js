@@ -62,7 +62,7 @@
                         console.log("=== csrfToken: ", csrfToken);
                         
                         let obj = { idToken: idToken,  csrfToken:csrfToken};
-                        _callApiPromise("POST", "/auth/signin", obj, _resolve, _reject)
+                        _callApiPromise("PUT", "/auth/signin", obj, _resolve, _reject)
                     })
                     .catch((err) => {
                         reject(err);
@@ -72,7 +72,7 @@
             method.signUpWithGoogleAuth = function() {
                 return new Promise((_resolve, _reject) => {
                     let obj = { userId: firebase.auth().currentUser.uid};
-                    _callApiPromise("POST", "/auth/signup", obj, _resolve, _reject);
+                    _callApiPromise("PUT", "/auth/signup", obj, _resolve, _reject);
                 });
             }
             method.signInWithEmailPassword = function(_credential) {
@@ -91,7 +91,7 @@
                         console.log("=== csrfToken: ", csrfToken);
                         
                         let obj = { idToken: idToken,  csrfToken:csrfToken};
-                        _callApiPromise("POST", "/auth/signin", obj, _resolve, _reject)
+                        _callApiPromise("PUT", "/auth/signin", obj, _resolve, _reject)
                     })
                     .catch((err) => {
                         console.log("=== err: ", err);
@@ -145,7 +145,7 @@
         }
         api.signOut = function() {
             return new Promise((_resolve, _reject) => {
-                _callApiPromise("POST", "/auth/signout", {}, _resolve, _reject);
+                _callApiPromise("DELETE", "/auth/signout", {}, _resolve, _reject);
             });
         }
         api.redirect = function(_redirectPath) {

@@ -24,13 +24,14 @@ lineFirebase.setup(lineFirebaseOptions);
 // init for firebase Authentication access
 lineFirebase.initAuthService();
 // init for firebase Database access
-//lineFirebase.initDBService();
+lineFirebase.initDBService();
 
 /**
  * Routes
  */
 let routeMain = require('./routes/rt-main'),
     routeAuth = require('./routes/rt-auth/rt-auth'),
+    routeApp = require('./routes/rt-app/rt-app'),
     routeService = require('./routes/rt-service/rt-service');
 
 /**
@@ -67,9 +68,11 @@ app.get('/', routeMain.main);
 app.get('/404', routeMain.noResource);
 app.get('/oops', routeMain.error);
 
-
 // user auth
 app.use('/auth', routeAuth.router);
+
+// app
+app.use('/app', checkSession.on, routeApp.router);
 
 // view service pages
 // allow access with valid session only

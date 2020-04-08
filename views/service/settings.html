@@ -66,19 +66,6 @@
 <!-- end of views -->
 
 <!-- Templates -->
-<!-- ex) Template for loader -->
-<script type="text/template" id="tmp-loader">
-    <div class="loader">
-        <div class="duo duo1">
-        <div class="dot dot-a"></div>
-        <div class="dot dot-b"></div>
-        </div>
-        <div class="duo duo2">
-        <div class="dot dot-a"></div>
-        <div class="dot dot-b"></div>
-        </div>
-    </div>
-</script>
 <script type="text/template" id="tmp-***">
 
 </script>
@@ -96,17 +83,17 @@
         // control codes go below
         //
         $("#app-add-btn").click((e)=>{
-                e.preventDefault();
-                Line_Service_Spinner.spin($(".container-fluid").get(0));
-                console.log("--- api add btn clicked: ", $('#app-name-input').val());
-                Line_Firebase.api().addApiApps($('#app-name-input').val())
-                .then((result) => {
-                    Line_Service_Spinner.stop();
-                    console.log("--- result: ", result);
-                }).catch((error)=> {
-                    Line_Service_Spinner.stop();
-                    console.log("--- error: ", error);
-                });
+            e.preventDefault();
+            Line_Service_Spinner.spin($(".container-fluid").get(0));
+            console.log("--- api add btn clicked: ", $('#app-name-input').val());
+            Line_Firebase.app().add($('#app-name-input').val())
+            .then((result) => {
+                Line_Service_Spinner.stop();
+                console.log("--- result: ", result);
+            }).catch((error)=> {
+                Line_Service_Spinner.stop();
+                console.log("--- error: ", error);
+            });
         });
 
         //

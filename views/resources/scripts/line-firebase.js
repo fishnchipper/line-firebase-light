@@ -134,12 +134,12 @@
             }
             return method;
         }
-        api.api = function() {
+        api.app = function() {
             function method() {}
-            method.addApiApps = function(_appName) {
+            method.add = function(_appName) {
                 return new Promise((_resolve, _reject) => {
                     let obj = { appName: _appName };
-                    _callApiPromise("POST", "/auth/api/apps", obj, _resolve, _reject);
+                    _callApiPromise("POST", "/app", obj, _resolve, _reject);
                 });
             }
             return method;

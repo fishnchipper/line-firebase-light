@@ -159,11 +159,11 @@ let FirebaseDBHelper = (function() {
    * @param {object} __user The __user to add.
    * @return {Promise<string>} A promise fulfilled with status; otherwise, a rejected promise
    */
-  FirebaseDBHelper.prototype.setUser = function(__user) {
+  FirebaseDBHelper.prototype.setApp = function(__app) {
 
     return new Promise((resolve, reject) => {
               // query data in firebase
-              ___firestore___.collection("users").doc(`${__user.__uid}`).set(__user).then(() => {
+              ___firestore___.collection("applications").doc(`${__app.__id}`).set(__app).then(() => {
                 resolve("success");                 
               })
               .catch(err => {

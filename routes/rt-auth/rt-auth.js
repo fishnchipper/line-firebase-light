@@ -10,9 +10,6 @@ let getSignUp = require('./get-signup');
 let putSignUp = require('./put-signup');
 let putSignIn = require('./put-signin');
 let deleteSignOut = require('./delete-signout');
-let getApiAppsList = require('./get-api-apps');
-let postApiAppsCreate = require('./post-api-apps');
-let deleteApiApps = require('./delete-api-apps');
 let getApiAccessToken = require('./get-api-access');
 let deleteApiAccessToken = require('./delete-api-access');
 
@@ -35,15 +32,6 @@ router.route('/signup')
  */
 router.route('/signout')
       .delete(deleteSignOut.on);
-
-/**
- * /auth/api/apps
- */
-router.route('/api/apps')
-      .get(getApiAppsList.on)
-      .post(postApiAppsCreate.on)
-      .delete(deleteApiApps.on);
-
 
 /**
  * /auth/api/access

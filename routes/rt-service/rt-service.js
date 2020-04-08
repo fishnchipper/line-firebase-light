@@ -5,6 +5,7 @@ let router = express.Router();
 
 let getServiceMain = require('./get-service-main');
 let getUserProfile = require('./get-user-profile');
+let getSettings = require('./get-settings');
 
 
 
@@ -19,6 +20,13 @@ router.route('/')
  */
 router.route('/user/profile')
       .get(getUserProfile.on);
+
+
+/**
+ * /service/settings 
+ */
+router.route('/settings')
+      .get(getSettings.on);
 
 
 // close session 

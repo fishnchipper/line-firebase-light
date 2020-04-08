@@ -5,17 +5,24 @@
  */
 (function(_initUI, _eHanlder) {
 
-    let initUI = _initUI();
+    _initUI().spinner();
     let eHandler = _eHanlder();
 
+    // init event handlers
     eHandler.clickBrandName();
     eHandler.clickSignOutBtn();
     eHandler.clickProfileBtn();
+    eHandler.clickSettingsBtn();
     eHandler.clickApiDocBtn();
 
 })(function() { // initialization
     function main() {
         function init() {}
+
+        // init spinner
+        init.spinner = function() {
+            window.Line_Service_Spinner = new Spinner();
+        }
         return init;
     }
     return main();
@@ -52,6 +59,19 @@
                 e.preventDefault();
                 console.log("--- profile btn clicked. ");
                 Line_Firebase.view().getBlock("/service/user/profile")
+                .then((block)=> {
+                    $('#content-main').html(block);
+                })
+                .catch((error)=> {
+                    console.log("--- error: ", error);
+                })
+            });
+        }
+        eHandler.clickSettingsBtn = function() {
+            $('#line-settings-btn').click((e)=>{
+                e.preventDefault();
+                console.log("--- settings btn clicked. ");
+                Line_Firebase.view().getBlock("/service/settings")
                 .then((block)=> {
                     $('#content-main').html(block);
                 })

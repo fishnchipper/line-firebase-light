@@ -134,6 +134,16 @@
             }
             return method;
         }
+        api.api = function() {
+            function method() {}
+            method.addApiApps = function(_appName) {
+                return new Promise((_resolve, _reject) => {
+                    let obj = { appName: _appName };
+                    _callApiPromise("POST", "/auth/api/apps", obj, _resolve, _reject);
+                });
+            }
+            return method;
+        }
         api.view = function() {
             function method() {}
             method.getBlock = function(_path){

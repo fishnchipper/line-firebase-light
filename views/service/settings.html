@@ -1,0 +1,118 @@
+
+<!-------------------------------------------------------------------------- 
+ VIEWS  
+---------------------------------------------------------------------------->
+
+<!-- start of views -->
+<div id="service-content"> 
+
+    <!-- style -->
+    <style type="text/css">
+        .container-fluid {
+            margin-top: 5em;
+        }
+        .settings-sub-menu {
+            padding-top: 1em;
+            padding-bottom: 0.5em;
+        }
+    </style>
+
+    <!-- Header -->
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Setting A</a>
+                    <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Setting B</a>
+                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Applications</a>
+                    <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Setting C</a>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                        <h4>Setting A</h4>
+                        <hr>
+                    </div>
+                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                        <h4>Setting B</h4>
+                        <hr>
+                    </div>
+                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+                        <h4>OAuth Apps</h4>
+                        <hr>
+                        <div class='settings-sub-menu mx-auto'>
+                            <form class="form-inline my-2 my-lg-0">
+                                <input class="form-control mr-sm-2" id="app-name-input" type="text" placeholder="App name to remember">
+                                <button class="btn btn-outline-success my-2 my-sm-0" id="app-add-btn">Add</button>
+                              </form>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                        <h4>Setting C</h4>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sub Content -->
+    <div id="content-sub"></div>
+    <div id="content-sub-sub"></div>
+
+</div> 
+<!-- end of views -->
+
+<!-- Templates -->
+<!-- ex) Template for loader -->
+<script type="text/template" id="tmp-loader">
+    <div class="loader">
+        <div class="duo duo1">
+        <div class="dot dot-a"></div>
+        <div class="dot dot-b"></div>
+        </div>
+        <div class="duo duo2">
+        <div class="dot dot-a"></div>
+        <div class="dot dot-b"></div>
+        </div>
+    </div>
+</script>
+<script type="text/template" id="tmp-***">
+
+</script>
+
+
+
+<!-------------------------------------------------------------------------- 
+ CONTROLS  
+---------------------------------------------------------------------------->              
+     
+<script type="text/javascript">
+    (function() { 
+        let hello = Line_Firebase.hello();
+        
+        // control codes go below
+        //
+        $("#app-add-btn").click((e)=>{
+                e.preventDefault();
+                Line_Service_Spinner.spin($(".container-fluid").get(0));
+                console.log("--- api add btn clicked: ", $('#app-name-input').val());
+                Line_Firebase.api().addApiApps($('#app-name-input').val())
+                .then((result) => {
+                    Line_Service_Spinner.stop();
+                    console.log("--- result: ", result);
+                }).catch((error)=> {
+                    Line_Service_Spinner.stop();
+                    console.log("--- error: ", error);
+                });
+        });
+
+        //
+        // end of control codes
+
+    })();
+</script>
+
+

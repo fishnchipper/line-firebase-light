@@ -172,6 +172,93 @@ let FirebaseDBHelper = (function() {
 
           })
   }
+
+  FirebaseDBHelper.prototype.getDocuments = function(__collection, __doc_id) {
+
+    var isSpecificDoc = ( __doc_id === 'all')? false: true;
+    var query = '';
+
+    if(isSpecificDoc) {
+      query = ___firestore___.collection(__collection).where('__id','==', __doc_id);
+    }else {
+      query = ___firestore___.collection(__collection);
+    }
+
+    return new Promise((resolve, reject) => {
+
+            // query data in firebase
+            query.get().then(querySnapshot => {
+                if (querySnapshot.empty) {
+                    reject("nil");
+                }else {
+                    /*let docs = querySnapshot.docs;*/
+                    var docs = [];
+                    querySnapshot.forEach(doc => {
+                      docs.push(doc.data());
+                    });           
+                    resolve(docs);           
+                }
+            })
+            .catch(err => {
+              reject("fail - firebase query: ", err);
+            });
+
+          })
+  }
+  FirebaseDBHelper.prototype.addDocument = function(__collection, __doc_id, __doc) {
+
+    return new Promise((resolve, reject) => {
+              // query data in firebase
+              ___firestore___.collection(__collection).doc(__doc_id).set(__doc).then(() => {
+                resolve("success");                 
+              })
+              .catch(err => {
+                reject("fail - firebase set: ", err);
+              });
+
+          })
+  }
+  FirebaseDBHelper.prototype.deleteDocument = function(__collection, __doc_id) {
+
+    var targetDoc = __collection + "/" + __doc_id;
+    return new Promise((resolve, reject) => {
+
+            // query data in firebase
+            ___firestore___.doc(targetDoc).delete()
+            .then(()=> {         
+              resolve("deleted");           
+            })
+            .catch(err => {
+              reject("fail - firebase delete: ", err);
+            });
+
+          })
+  }
+  FirebaseDBHelper.prototype.getDocumentsWithUserUID = function(__collection, __user_uid) {
+
+    var query = ___firestore___.collection(__collection).where('__userUID','==', __user_uid);
+
+    return new Promise((resolve, reject) => {
+
+            // query data in firebase
+            query.get().then(querySnapshot => {
+                if (querySnapshot.empty) {
+                    resolve("none");
+                }else {
+                    /*let docs = querySnapshot.docs;*/
+                    var docs = [];
+                    querySnapshot.forEach(doc => {
+                      docs.push(doc.data());
+                    });           
+                    resolve(docs);           
+                }
+            })
+            .catch(err => {
+              reject("fail - firebase query: ", err);
+            });
+
+          })
+  }
   return FirebaseDBHelper;
 })();
 exports.FirebaseDBHelper = FirebaseDBHelper;

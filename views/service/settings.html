@@ -15,6 +15,9 @@
             padding-top: 1em;
             padding-bottom: 0.5em;
         }
+        .app-list {
+            padding-top: 2em;
+        }
     </style>
 
     <!-- Header -->
@@ -25,7 +28,7 @@
                 <div class="list-group" id="list-tab" role="tablist">
                     <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Setting A</a>
                     <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Setting B</a>
-                    <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Applications</a>
+                    <a class="list-group-item list-group-item-action" id="settings-apps-list" data-toggle="list" href="#settings-apps" role="tab" aria-controls="messages">Applications</a>
                     <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Setting C</a>
                 </div>
             </div>
@@ -39,14 +42,17 @@
                         <h4>Setting B</h4>
                         <hr>
                     </div>
-                    <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+                    <div class="tab-pane fade" id="settings-apps" role="tabpanel" aria-labelledby="settings-apps-list">
                         <h4>OAuth Apps</h4>
                         <hr>
-                        <div class='settings-sub-menu mx-auto'>
+                        <div class='mx-auto'>
                             <form class="form-inline my-2 my-lg-0">
                                 <input class="form-control mr-sm-2" id="app-name-input" type="text" placeholder="App name to remember">
                                 <button class="btn btn-outline-success my-2 my-sm-0" id="app-add-btn">Add</button>
-                              </form>
+                            </form>
+                        </div>
+                        <div class='app-list mx-auto'>
+                            <ul class="list-group" id="app-list"></ul>
                         </div>
                     </div>
                     <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
@@ -66,22 +72,104 @@
 <!-- end of views -->
 
 <!-- Templates -->
-<script type="text/template" id="tmp-***">
-
+<script type="text/template" id="tmp-app-item">
+    <li class="list-group-item d-flex justify-content-between align-items-center" id="app-item-{% __id %}">
+        <span class="app-name"><mark> {% name %} </mark> <code class="text-muted">(id:  {% __id %})</code></span> 
+        <button class="btn btn-default btn-sm remove-item" id={% __id %}>
+            <svg class="bi bi-x" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M4.146 4.146a.5.5 0 000 .708l7 7a.5.5 0 00.708-.708l-7-7a.5.5 0 00-.708 0z" clip-rule="evenodd"/>
+              </svg>
+        </button>
+    </li>
 </script>
-
 
 
 <!-------------------------------------------------------------------------- 
  CONTROLS  
----------------------------------------------------------------------------->              
-     
+---------------------------------------------------------------------------->     
+<script src="/scripts/mustache.js"></script>         
 <script type="text/javascript">
     (function() { 
         let hello = Line_Firebase.hello();
-        
+        Mustache.parse($('#tmp-app-item').html(), [ '{%', '%}' ] );
+
         // control codes go below
         //
+        var appList = [];
+        var isLoaded = false;
+
+
+        function _getAppList(cb) {
+            Line_Firebase.app().list()
+                .then((list) => {
+                    console.log("--- all list: ", list);
+                    if(list.payload != "none") {
+                        appList = list.payload;
+                    }
+                    cb();
+                })
+                .catch((e)=> {
+                    console.log("--- error: ", e);
+                    cb(e);
+                })
+        }
+        function _deleteApp(_app_id, cb) {
+            Line_Firebase.app().delete(_app_id)
+                .then((result) => {
+                    appList.forEach((item, idx)=>{
+                        if(item.__id == result.payload.__id) {
+                            appList.splice(idx, 1);
+                        }
+                    });
+                    cb();
+                }).catch((e)=> {
+                    console.log("--- error: ", e);
+                    cb(e);
+                });
+        }
+        function refreshAppListView() {
+            $('#app-list').html("");
+            if(appList.length > 0) {
+                appList.forEach(app => {
+                    $('#app-list').append(Mustache.render($('#tmp-app-item').html(), { name: app.name, __id: app.__id }));
+                });
+                eHandlerRemoveAppItem();
+            }
+        }
+        function eHandlerRemoveAppItem() {
+            // event handler - app remove btn
+            $(".remove-item").click((e) => {
+                e.preventDefault();
+                console.log("--- event target id: ", e.currentTarget.getAttribute('id'));
+                Line_Service_Spinner.spin($(".container-fluid").get(0));
+                _deleteApp(e.currentTarget.getAttribute('id'), (e)=>{
+                    Line_Service_Spinner.stop();
+                    if(!e) {
+                        refreshAppListView();
+                    }
+                });
+            });
+        }
+
+        
+        $('#settings-apps-list').click((e)=>{
+            e.preventDefault();
+            console.log("--- appList.length: ", appList.length);
+            if(!isLoaded) {
+                Line_Service_Spinner.spin($(".container-fluid").get(0));
+                _getAppList((e)=>{
+                    Line_Service_Spinner.stop();
+                    isLoaded = true;
+                    if(!e) {
+                        refreshAppListView();
+                    } 
+                });
+            }
+        })
+
+
+        // event handler - app add btn 
         $("#app-add-btn").click((e)=>{
             e.preventDefault();
             Line_Service_Spinner.spin($(".container-fluid").get(0));
@@ -90,11 +178,14 @@
             .then((result) => {
                 Line_Service_Spinner.stop();
                 console.log("--- result: ", result);
+                appList.push(result.payload);
+                refreshAppListView();
             }).catch((error)=> {
                 Line_Service_Spinner.stop();
                 console.log("--- error: ", error);
             });
         });
+
 
         //
         // end of control codes

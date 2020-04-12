@@ -1,12 +1,13 @@
-
-
-
+let lineFirbase = require('../../line_modules/line-firebase');
+let dbAdapter = lineFirbase.createDBAdapter();
 
 function on(req, res, next) {
-    
-    let user = req.decodedSession;
 
-    res.render('./service/settings', "", function(err, html) {
+    console.log("++++ api ++++ {get} /service/settings called");
+    var renderData = {};
+
+    // render & return to client
+    res.render('./service/settings', renderData, function(err, html) {
         if(err) {
             console.log(err);
             res.status(err.status).end();

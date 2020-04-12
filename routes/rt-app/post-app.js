@@ -8,7 +8,7 @@ let dbAdapter = lineFirbase.createDBAdapter();
 
 
 function on(req, res, next) {
-    console.log("++++ api ++++ /app called");
+    console.log("++++ api ++++ {post} /app called");
 
     // Get the app name passed.
     let appName = req.body.appName;
@@ -40,11 +40,15 @@ function on(req, res, next) {
                 }else {
                     //console.log(privateKey);
                     //console.log(publicKey);
-                    var appProfile = { __id: appId, userId: user.user_id, aat: Date.now(), publicKey: _publicKey};
-                    dbAdapter.setApp(appProfile)
+                    var appProfile = { __id: appId, 
+                                       __userUID: user.user_id, 
+                                       __aat: Date.now(),
+                                       name: appName, 
+                                       publicKey: _publicKey};
+                    dbAdapter.addDocument('applications', appProfile.__id, appProfile)
                     .then((result) => {
                         console.log("++++ result: ", result);
-                        res.json({code: 'api.app.add', message:"oauth app is successfully added", payload:{ app_id: appId, private_key: _privateKey }});
+                        res.json({code: 'api.app.operation', message:"oauth app is successfully added", payload:appProfile});
                     })
                     .catch((e)=>{
                         res.status(400).json({code: 'api.app.error', message:'oauth app add error'});  

@@ -136,10 +136,25 @@
         }
         api.app = function() {
             function method() {}
+            method.list = function(_userUID) {
+                return new Promise((_resolve, _reject) => {
+                    let apiPath = "/app";
+                    let obj = { };
+                    _callApiPromise("GET", apiPath, obj, _resolve, _reject);
+                });
+            }
             method.add = function(_appName) {
                 return new Promise((_resolve, _reject) => {
+                    let apiPath = "/app";
                     let obj = { appName: _appName };
-                    _callApiPromise("POST", "/app", obj, _resolve, _reject);
+                    _callApiPromise("POST", apiPath, obj, _resolve, _reject);
+                });
+            }
+            method.delete = function(_appId) {
+                return new Promise((_resolve, _reject) => {
+                    let apiPath = "/app/" + _appId;
+                    let obj = { };
+                    _callApiPromise("DELETE", apiPath, obj, _resolve, _reject);
                 });
             }
             return method;

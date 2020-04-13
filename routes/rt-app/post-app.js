@@ -48,6 +48,7 @@ function on(req, res, next) {
                     dbAdapter.addDocument('applications', appProfile.__id, appProfile)
                     .then((result) => {
                         console.log("++++ result: ", result);
+                        appProfile.privateKey = _privateKey;
                         res.json({code: 'api.app.operation', message:"oauth app is successfully added", payload:appProfile});
                     })
                     .catch((e)=>{

@@ -18,6 +18,10 @@
         .app-list {
             padding-top: 2em;
         }
+        .information {
+            padding-top: 1em;
+            padding-bottom: 1em;
+        }
     </style>
 
     <!-- Header -->
@@ -51,6 +55,9 @@
                                 <button class="btn btn-outline-success my-2 my-sm-0" id="app-add-btn">Add</button>
                             </form>
                         </div>
+                        <div class="information">
+                            <p class="lead text-muted">Delete a registered application by clicking <code>X</code> and add new one when you lost a private key created as the service does not keep a private key.</p>
+                        </div>
                         <div class='app-list mx-auto'>
                             <ul class="list-group" id="app-list"></ul>
                         </div>
@@ -74,13 +81,16 @@
 <!-- Templates -->
 <script type="text/template" id="tmp-app-item">
     <li class="list-group-item d-flex justify-content-between align-items-center" id="app-item-{% __id %}">
-        <span class="app-name"><mark> {% name %} </mark> <code class="text-muted">(id:  {% __id %})</code></span> 
-        <button class="btn btn-default btn-sm remove-item" id={% __id %}>
-            <svg class="bi bi-x" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z" clip-rule="evenodd"/>
-                <path fill-rule="evenodd" d="M4.146 4.146a.5.5 0 000 .708l7 7a.5.5 0 00.708-.708l-7-7a.5.5 0 00-.708 0z" clip-rule="evenodd"/>
-              </svg>
-        </button>
+        <span class="app-name"><mark> {% name %}</mark> <code class="text-muted">(id:  {% __id %})</code></span> 
+        <div class="d-flex justify-content-end align-items-center">
+            <a id="app-item-download-{% __id %}" href="" download="{% __id %}.txt" hidden>Download</a><span id="app-item-key-{% __id %}" hidden>{% privateKey %}</span>
+            <button class="btn btn-default btn-sm remove-item" id={% __id %}>
+                <svg class="bi bi-x" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd" d="M4.146 4.146a.5.5 0 000 .708l7 7a.5.5 0 00.708-.708l-7-7a.5.5 0 00-.708 0z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+        </div>
     </li>
 </script>
 
@@ -132,8 +142,19 @@
             $('#app-list').html("");
             if(appList.length > 0) {
                 appList.forEach(app => {
-                    $('#app-list').append(Mustache.render($('#tmp-app-item').html(), { name: app.name, __id: app.__id }));
+                    $('#app-list').append(Mustache.render($('#tmp-app-item').html(), { name: app.name, __id: app.__id, privateKey: app.privateKey}));
+                    var pkey = $('#app-item-key-'+app.__id).text();
+                    
+                    if(pkey) {
+                        $('#app-item-download-'+app.__id).removeAttr('hidden');
+                        $('#app-item-download-'+app.__id).click((e)=>{
+                            //e.preventDefault(); <- if used, download attr does not work.
+                            let attrValue= "data:text/plain;charset=UTF-8," + encodeURIComponent(pkey);
+                            $('#app-item-download-'+app.__id).attr('href', attrValue);
+                        });
+                    }
                 });
+
                 eHandlerRemoveAppItem();
             }
         }

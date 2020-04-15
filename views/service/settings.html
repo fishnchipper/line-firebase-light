@@ -83,7 +83,7 @@
     <li class="list-group-item d-flex justify-content-between align-items-center" id="app-item-{% __id %}">
         <span class="app-name"><mark> {% name %}</mark> <code class="text-muted">(id:  {% __id %})</code></span> 
         <div class="d-flex justify-content-end align-items-center">
-            <a id="app-item-download-{% __id %}" href="" download="{% __id %}.txt" hidden>Download</a><span id="app-item-key-{% __id %}" hidden>{% privateKey %}</span>
+            <a id="app-item-download-{% __id %}" href="" download="{% __id %}.json" hidden>Download</a><span id="app-item-key-{% __id %}" hidden>{% privateKey %}</span>
             <button class="btn btn-default btn-sm remove-item" id={% __id %}>
                 <svg class="bi bi-x" width="1.5em" height="1.5em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z" clip-rule="evenodd"/>
@@ -149,7 +149,9 @@
                         $('#app-item-download-'+app.__id).removeAttr('hidden');
                         $('#app-item-download-'+app.__id).click((e)=>{
                             //e.preventDefault(); <- if used, download attr does not work.
-                            let attrValue= "data:text/plain;charset=UTF-8," + encodeURIComponent(pkey);
+                            var serverkey = `{ "app_id": "${app.__id}", "private_key": ${JSON.stringify(pkey)}}`;
+                            console.log("--- serverkey: ", serverkey);
+                            let attrValue= "data:text/plain;charset=UTF-8," + encodeURIComponent(serverkey);
                             $('#app-item-download-'+app.__id).attr('href', attrValue);
                         });
                     }

@@ -124,46 +124,18 @@ let FirebaseDBHelper = (function() {
   function FirebaseDBHelper() {}
 
   /**
-   * query a user in firebase
+   * add a document to firebase
    * 
-   * @param {string} __uid The __uid to query.
+   * @param {string} __collection collection to add doc
+   * @param {string} __doc_id doc id to use
+   * @param {string} __doc doc to add
    * @return {Promise<user>} A promise fulfilled with user document; otherwise, a rejected promise
    */
-  FirebaseDBHelper.prototype.getUser = function(__uid) {
-
-    let query = ___firestore___.collection('users').where('__uid','==', __uid);
-
-    return new Promise((resolve, reject) => {
-
-            // query data in firebase
-            query.get().then(querySnapshot => {
-                if (querySnapshot.empty) {
-                    reject("nil");
-                }else {
-                    /*let docs = querySnapshot.docs;*/
-                    querySnapshot.forEach(doc => {
-                      resolve(doc.data());
-                    });                      
-                }
-            })
-            .catch(err => {
-              reject("fail - firebase query: ", err);
-            });
-
-          })
-  }
-
-  /**
-   * add a user in firebase
-   * 
-   * @param {object} __user The __user to add.
-   * @return {Promise<string>} A promise fulfilled with status; otherwise, a rejected promise
-   */
-  FirebaseDBHelper.prototype.setApp = function(__app) {
+  FirebaseDBHelper.prototype.addDocument = function(__collection, __doc_id, __doc) {
 
     return new Promise((resolve, reject) => {
               // query data in firebase
-              ___firestore___.collection("applications").doc(`${__app.__id}`).set(__app).then(() => {
+              ___firestore___.collection(__collection).doc(__doc_id).set(__doc).then(() => {
                 resolve("success");                 
               })
               .catch(err => {
@@ -172,24 +144,41 @@ let FirebaseDBHelper = (function() {
 
           })
   }
+  FirebaseDBHelper.prototype.getDocuments = function(__collection) {
 
-  FirebaseDBHelper.prototype.getDocuments = function(__collection, __doc_id) {
+    var query = ___firestore___.collection(__collection);
 
-    var isSpecificDoc = ( __doc_id === 'all')? false: true;
-    var query = '';
+    return new Promise((resolve, reject) => {
 
-    if(isSpecificDoc) {
-      query = ___firestore___.collection(__collection).where('__id','==', __doc_id);
-    }else {
-      query = ___firestore___.collection(__collection);
-    }
+            var docs = [];
+            // query data in firebase
+            query.get().then(querySnapshot => {
+                if (querySnapshot.empty) {
+                    // do nothing
+                }else {
+                    querySnapshot.forEach(doc => {
+                      docs.push(doc.data());
+                    });           
+                              
+                }
+                resolve(docs); 
+            })
+            .catch(err => {
+              reject("fail - firebase query: ", err);
+            });
+
+          })
+  }
+  FirebaseDBHelper.prototype.getDocumentsWithUserUID = function(__collection, __user_uid) {
+
+    var query = ___firestore___.collection(__collection).where('__userUID','==', __user_uid);
 
     return new Promise((resolve, reject) => {
 
             // query data in firebase
             query.get().then(querySnapshot => {
                 if (querySnapshot.empty) {
-                    reject("nil");
+                    resolve("nil");
                 }else {
                     /*let docs = querySnapshot.docs;*/
                     var docs = [];
@@ -205,16 +194,28 @@ let FirebaseDBHelper = (function() {
 
           })
   }
-  FirebaseDBHelper.prototype.addDocument = function(__collection, __doc_id, __doc) {
+  FirebaseDBHelper.prototype.getDocumentsWithDocID = function(__collection, __doc_id) {
+
+    var query = ___firestore___.collection(__collection).where('__id','==', __doc_id);
 
     return new Promise((resolve, reject) => {
-              // query data in firebase
-              ___firestore___.collection(__collection).doc(__doc_id).set(__doc).then(() => {
-                resolve("success");                 
-              })
-              .catch(err => {
-                reject("fail - firebase set: ", err);
-              });
+
+            // query data in firebase
+            query.get().then(querySnapshot => {
+                if (querySnapshot.empty) {
+                    resolve("nil");
+                }else {
+                    /*let docs = querySnapshot.docs;*/
+                    var docs = [];
+                    querySnapshot.forEach(doc => {
+                      docs.push(doc.data());
+                    });           
+                    resolve(docs);           
+                }
+            })
+            .catch(err => {
+              reject("fail - firebase query: ", err);
+            });
 
           })
   }
@@ -230,31 +231,6 @@ let FirebaseDBHelper = (function() {
             })
             .catch(err => {
               reject("fail - firebase delete: ", err);
-            });
-
-          })
-  }
-  FirebaseDBHelper.prototype.getDocumentsWithUserUID = function(__collection, __user_uid) {
-
-    var query = ___firestore___.collection(__collection).where('__userUID','==', __user_uid);
-
-    return new Promise((resolve, reject) => {
-
-            // query data in firebase
-            query.get().then(querySnapshot => {
-                if (querySnapshot.empty) {
-                    resolve("none");
-                }else {
-                    /*let docs = querySnapshot.docs;*/
-                    var docs = [];
-                    querySnapshot.forEach(doc => {
-                      docs.push(doc.data());
-                    });           
-                    resolve(docs);           
-                }
-            })
-            .catch(err => {
-              reject("fail - firebase query: ", err);
             });
 
           })

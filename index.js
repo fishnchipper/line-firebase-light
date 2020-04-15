@@ -26,6 +26,7 @@ lineFirebase.initAuthService();
 // init for firebase Database access
 lineFirebase.initDBService();
 
+
 /**
  * Routes
  */
@@ -37,7 +38,7 @@ let routeMain = require('./routes/rt-main'),
 /**
  * Middlewares
  */
-let checkSessionToken = require('./middleware/check-token');
+let checkAccessToken = require('./middleware/check-access-token');
 let checkSession = require('./middleware/check-session');
 
 
@@ -68,7 +69,8 @@ app.get('/', routeMain.main);
 app.get('/404', routeMain.noResource);
 app.get('/oops', routeMain.error);
 
-// user auth
+// user/app auth
+global.___appProfileList___ = new Map(); // plays like a cache for keeping appProfiles queried by /auth/app
 app.use('/auth', routeAuth.router);
 
 // app
@@ -117,7 +119,7 @@ app.use('/service', checkSession.on, routeService.router);
 
     // your defined api
     let routeApiXXXV1 = require('./routes/rt-api-xxx-v1/rt-api-xxx-v1');
-    app.use('/api/xxx/v1', checkSessionToken.on, routeApiXXXV1.router);
+    app.use('/api/xxx/v1', checkAccessToken.on, routeApiXXXV1.router);
 
 //
 // end of your RESTFul APIs

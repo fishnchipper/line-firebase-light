@@ -10,8 +10,7 @@ let getSignUp = require('./get-signup');
 let putSignUp = require('./put-signup');
 let putSignIn = require('./put-signin');
 let deleteSignOut = require('./delete-signout');
-let getApiAccessToken = require('./get-api-access');
-let deleteApiAccessToken = require('./delete-api-access');
+let putAuthApp = require('./put-app');
 
 /**
  * /auth/signin
@@ -34,11 +33,10 @@ router.route('/signout')
       .delete(deleteSignOut.on);
 
 /**
- * /auth/api/access
+ * /auth/app
  */
-router.route('/api/access')
-      .get(getApiAccessToken.on)
-      .delete(deleteApiAccessToken.on);
+router.route('/app')
+      .put(putAuthApp.on);
 
 
 // close session 

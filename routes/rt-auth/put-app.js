@@ -3,6 +3,7 @@ const crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 let lineFirbase = require('../../line_modules/line-firebase');
 let dbAdapter = lineFirbase.createDBAdapter();
+var uuid = require('uuid-random');
 
 
 var error = {};
@@ -11,7 +12,8 @@ var appProfile = {
     authenticate: function(_privateKey) { 
         return new Promise((resolve, reject) => {
             // verify credential of the private key
-            const buffer = Buffer.from("hello gamma. you were encrypted using private key.");
+            var randomString = uuid();
+            const buffer = Buffer.from(randomString);
             try {  
                 const passPhrase = appProfile.profile.__id;
                 const encryptedBuffer = crypto.privateEncrypt(
@@ -19,14 +21,14 @@ var appProfile = {
                                 buffer
                                 );
 
-                console.log(" buffer: ", buffer.toString());
+                //console.log(" buffer: ", buffer.toString());
                 //console.log(" encrypted buffer: ", encryptedBuffer.toString());
 
                 const decryptedBuffer = crypto.publicDecrypt(
                                 appProfile.profile.publicKey, 
                                 encryptedBuffer
                                 );
-                console.log(" dcrypted buffer: ", decryptedBuffer.toString());
+                //console.log(" dcrypted buffer: ", decryptedBuffer.toString());
                 if(buffer.toString() == decryptedBuffer.toString()) {
                     resolve(appProfile);
                 }else {
@@ -40,9 +42,10 @@ var appProfile = {
             }
         });
     },
-    createAccessToken: function(_privateKey) {
+    createAccessToken: function() {
         return new Promise((resolve, reject) => {
-            const passPhrase = appProfile.profile.__id;
+            const kprofile = ___pkiKeyPairsForAccessKeyGen___.get('kprofile');
+
             // issuing an OAuth2.0 access token
             jwt.sign(
                 {   iss: "line-firebase",
@@ -50,14 +53,14 @@ var appProfile = {
                     sub: appProfile.profile.__userUID,
                     client_id: appProfile.profile.__id
                 }, 
-                _privateKey,
-                { expiresIn: 60 * 60},
+                kprofile.privateKey, 
+                { algorithm: 'RS256', expiresIn: 60*60},
                 (err, token) => {
                     if(err) {
-                        console.log("err: ", err);
+                        //console.log("err: ", err);
                         reject(err);
                     }else {
-                        console.log(" jwt access token: +", token, "+");
+                        //console.log(" jwt access token: +", token, "+");
                         resolve(token);
                     }
                 });
@@ -81,7 +84,7 @@ function _getAppProfile(_appId) {
                     reject(error);
                 }else {
                     profile = docs[0];
-                    console.log("++++ appProfile retrieved: ", profile);
+                    //console.log("++++ appProfile retrieved: ", profile);
                     global.___appProfileList___.set(_appId, profile);
                 }
                 appProfile.profile = profile;
@@ -111,14 +114,19 @@ function on(req, res, next) {
      //        - try crypto.privateEncrypt() using {private_key} & {passphrase}
      //        - double-check the {private_key} by trying crypto.publicDecrypt using {public_key}
 
+     
      _getAppProfile(keyProfile.app_id)
      .then((appProfile)=>{
+        console.log("     app id: ", appProfile.profile.__id);
+        console.log("     app profile exists.");
         return appProfile.authenticate(keyProfile.private_key);
      })
      .then((appProfile)=>{
-        return appProfile.createAccessToken(keyProfile.private_key);
+        console.log("     authentication successful");
+        return appProfile.createAccessToken();
      })
      .then((accessToken) => {
+        console.log("     {to-be OAuth2.0} access token is issued");
         res.status(200).json({code: 'auth.app', message:'authentication successful.', payload: accessToken});
      })
      .catch((e)=>{

@@ -4,6 +4,8 @@
 
 function on(req, res, next) {
     
+    console.log("++++ api ++++ {get} /auth/signup called");
+
     let values = '';
 
     res.render('./auth/sign-up', values, function(err, html) {

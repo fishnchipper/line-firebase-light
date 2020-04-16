@@ -69,8 +69,13 @@ app.get('/', routeMain.main);
 app.get('/404', routeMain.noResource);
 app.get('/oops', routeMain.error);
 
-// user/app auth
-global.___appProfileList___ = new Map(); // plays like a cache for keeping appProfiles queried by /auth/app
+// [OTHER METHODS NEED TO BE CONSIDERED] plays like a cache for keeping appProfiles queried by /auth/app
+global.___appProfileList___ = new Map(); 
+// [OTHER METHODS NEED TO BE CONSIDERED] PKI asyncronous key pairs used for OAuth2.0 access key generation
+const lineInit = require('./line_modules/line-init');
+lineInit.generateAKeyPairsForAccessKey();
+
+// user & app authentication
 app.use('/auth', routeAuth.router);
 
 // app

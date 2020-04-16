@@ -4,6 +4,8 @@ let authAdapter = lineFirbase.createAuthAdapter();
 
 
 function on(req, res, next) {
+
+    console.log("++++ api ++++ {put} /auth/signup called");
     
     // Get the ID token passed.
     let userId = req.body.userId;

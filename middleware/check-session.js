@@ -1,7 +1,10 @@
 
 "use strict";
 
+
 function on(req, res, next) {
+
+    console.log(">> checking session");
 
     const sessionCookie = req.cookies.session || '';
     // Verify the session cookie. In this case an additional check is added to detect

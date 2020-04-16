@@ -3,6 +3,8 @@
 
 
 function on(req, res, next) {
+
+    console.log("++++ api ++++ {get} /auth/signin called");
     
     let values = '';
 

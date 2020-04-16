@@ -1,5 +1,4 @@
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 var uuid = require('uuid-random');
 
 let lineFirbase = require('../../line_modules/line-firebase');

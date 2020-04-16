@@ -4,6 +4,8 @@ let lineFirbase = require('../../line_modules/line-firebase');
 let authAdapter = lineFirbase.createAuthAdapter();
 
 function on(req, res, next) {
+
+  console.log("++++ api ++++ {put} /auth/signin called");
     
   // Get the ID token passed and the CSRF token.
   const idToken = req.body.idToken.toString();

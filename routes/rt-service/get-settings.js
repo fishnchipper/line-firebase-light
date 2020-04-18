@@ -1,5 +1,3 @@
-let lineFirbase = require('../../line_modules/line-firebase');
-let dbAdapter = lineFirbase.createDBAdapter();
 
 function on(req, res, next) {
 

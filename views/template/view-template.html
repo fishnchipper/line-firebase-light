@@ -45,10 +45,13 @@
 <!-------------------------------------------------------------------------- 
  CONTROLS  
 ---------------------------------------------------------------------------->              
-     
+<!-- For client-side rendering -->
+<script src="/scripts/mustache.js"></script>         
 <script type="text/javascript">
     (function() { 
         let hello = Line_Firebase.hello();
+        Mustache.parse($('#tmp-app-item').html(), [ '{%', '%}' ] );
+
 
         // control codes go below
         //

@@ -3,22 +3,26 @@
 
 # line-firebase
 
-line-firebase is a NodeJS + Express App shell which can be used as a start point for web front applications or microservices with RESTful API interfaces. 
+line-firebase is a NodeJS + Express App shell which can be used as a start point for web applications or microservices with RESTful API interfaces. 
 
-- `App shell` design architecture
+- [`App shell`](https://developers.google.com/web/fundamentals/architecture/app-shell) design architecture 
 - `OAuth 2.0 and OpenID Connect` enabled
 - `Firebase database access` enabled
-- Easy to add secure session-token based `RESTFul API` with automatic Swagger API document generation.
+- Focus on your own content pages
+- Easy to add secure ([OAuth2.0](https://tools.ietf.org/html/draft-ietf-oauth-access-token-jwt-06)) access token based `RESTFul API` with automatic Swagger API document generation
+- Easy to add 3rd-party open-source javascript libraries 
+
+![app shell](./docs/line-fb-app-shell.png | width=100)
 
 ## OAuth 2.0 and OpenID Connect
 [Google Firebase Admin SDK & Firebase JavaScript SDK](https://firebase.google.com/docs/auth) is used to acheive OAuth 2.0 and OpenID Connect.
 
-- Firebase server private key is required. Create your one from your Firebase project and then setup `databaseURL` of the Firebase project and `keyFilename` with the file containing the private key. Below is an example in `index.js` where the setup is required.
+- Firebase server private key is required. Create your own Firebase project and then setup `databaseURL` of the Firebase project and `keyFilename` with the file containing the private key. Below is an part of `index.js` where the setup is required.
 
     ```
     const lineFirebaseOptions = {
     // firebase database url
-    databaseURL: "https://line-7e593.firebaseio.com",
+    databaseURL: "https://line-****.firebaseio.com",
     // firebase Admin SDK private key 
     keyFilename: './environment/firebase-serverkey.json'
     };
@@ -33,9 +37,23 @@ If you are going to use the Firebase project you created for `OAuth 2.0 and Open
 //lineFirebase.initDBService();
 ```
 
+# Where to start
 
 
-## How to add your RESTFul APIs
+1. Install dependent packages
+```
+$ npm install
+```
+
+2. Run the app
+```
+$ npm start
+==> line-firebase - (v0.1.1) https://localhost:65000
+```
+
+
+
+# How to add your RESTFul APIs
 
  1. create a route folder (ex `rt-api-xxx-v1`) under `/routes`
     - ex) `/routes/rt-api-xxx-v1`
@@ -162,18 +180,6 @@ If you are going to use the Firebase project you created for `OAuth 2.0 and Open
 6. Add your common components under /models if any. For example, see `/models/response.js`
 
 
+# How to add your 
 
-# Where to start
-
-
-1. Install dependent packages
-```
-$ npm install
-```
-
-2. Run the app
-```
-$ npm start
-==> line-firebase - (v0.1.1) https://localhost:65000
-```
 

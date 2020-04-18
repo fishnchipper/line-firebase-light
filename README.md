@@ -12,7 +12,7 @@ line-firebase is a NodeJS + Express App shell which can be used as a start point
 - Easy to add secure ([OAuth2.0](https://tools.ietf.org/html/draft-ietf-oauth-access-token-jwt-06)) access token based `RESTFul API` with automatic Swagger API document generation
 - Easy to add 3rd-party open-source javascript libraries 
 
-![app shell](./docs/line-fb-app-shell.png | width=100)
+![app shell](./docs/line-fb-app-shell.png)
 
 ## OAuth 2.0 and OpenID Connect
 [Google Firebase Admin SDK & Firebase JavaScript SDK](https://firebase.google.com/docs/auth) is used to acheive OAuth 2.0 and OpenID Connect.

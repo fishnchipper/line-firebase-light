@@ -14,7 +14,7 @@ line-firebase is a NodeJS + Express App shell which can be used as a start point
 - `OAuth 2.0 and OpenID Connect` enabled
 - `Firebase database access` enabled
 - Focus on your own content pages
-- Easy to add secure ([OAuth2.0](https://tools.ietf.org/html/draft-ietf-oauth-access-token-jwt-06)) access token based `RESTFul API` with automatic Swagger API document generation
+- Easy to add secure ([OAuth2.0](https://tools.ietf.org/html/draft-ietf-oauth-access-token-jwt-06)) access token based `RESTful API` with automatic Swagger API document generation
 - Easy to add 3rd-party open-source javascript libraries
 
 
@@ -60,7 +60,121 @@ $ npm start
 
 
 
-# How to add your RESTFul APIs
+# How to Edit Application Shell
+
+The below open sources are the key toolkit & library used to build line-firebase.
+
+- [Bootstrap 4.x toolkit](https://getbootstrap.com/) : can be easily replaced with your favorate toolkit.
+- [JQuery 3.x](https://jquery.com/) : codes written using JQuery can be easily replaced with plain JavaScript for performance-critical applications.
+
+You might want to give a different look & feels to Application Shell. Chage files below for this purpose.
+- `/views/main.html` : main page. You might don't need this.
+- `/views/no-page.html` : a page redirected when a wrong uri is given.
+- `/views/invalid-session.html` : a page redirected when a session is expired.
+- `/views/error.html` : a page redirected when an unknown error occurs.
+- `/views/auth/sign-in.html` : Sign In page
+- `/views/auth/sign-up.html` : Sign Up page
+- `/views/service/index.html` : service main page. You might start your main page here.
+- `/views/resources/css/main.css` : css file for `/views/main.html`
+- `/views/resources/css/service.css` : css file for `/views/service/index.html`
+- `/views/resources/scripts/line-firebase.js` : main model script where `window.Line_Firebase` is defined. `window.Line_Firebase` does not contain UI-related control but model-related logics to communicate with route paths in server.
+- `/views/resources/scripts/line-service-ui.js` : control script for `/views/service/index.html`
+- `/views/resources/scripts/line-signin-ui.js` : control script for `/views/auth/sign-in.html`
+- `/views/resources/scripts/line-signup-ui.js` : control script for `/views/auth/sign-up.html`
+
+# How to Add Content 
+
+1. Add a new content page.
+ - Copy `/views/template/view-template.html` to `/views/service` folder.
+ - Rename the copied `view-template.html` with a meaningful name. For exmaple
+    ```
+    settings.html
+    ```
+2. Add a route path for the new content page created at step 1.
+ - Add a new route function file for the new content at `/routes/rt-service`. For example,
+   ```
+   function on(req, res, next) {
+
+        var renderData = {};
+
+        // render & return to client
+        res.render('./service/settings', renderData, function(err, html) {
+            if(err) {
+                res.status(err.status).end();
+            }else {
+                res.set('Content-Type', 'text/html');
+                res.send(html);
+            }
+        });
+    }
+
+    module.exports.on= on;
+   ```
+ - Add a route path of the route function for the new content page at `/routes/rt-service/rt-service.js`. For example, 
+    ```
+    let getSettings = require('./get-settings');
+    ...
+    /**
+     * /service/settings 
+     */
+    router.route('/settings')
+          .get(getSettings.on);
+    ```
+
+3. Add a control and event handler for the content page.
+ - For example, for `Settings` menu
+    - `dropdown-item` DOM element is added in `/views/service/index.html`
+    ```
+    <a class="dropdown-item" id="line-settings-btn" href="#">Settings</a>
+    ```
+    - an event handler for `id="line-settings-btn"` is added to `/views/resources/scripts/line-service-ui.js`
+    ```
+    eHandler.clickSettingsBtn = function() {
+        $('#line-settings-btn').click((e)=>{
+            e.preventDefault();
+            Line_Firebase.view().getBlock("/service/settings")
+            .then((block)=> {
+                $('#content-main').html(block);
+            })
+            .catch((error)=> {
+                console.log("--- error: ", error);
+            })
+        });
+    }
+    ```
+    The route path added for the new content is passed to the parameter of `Line_Firebase.view().getBlock()`. In this Settings example, `/service/settings` is the route path.
+
+
+
+# User-defined RESTful APIs
+
+## URI of RESTful API
+
+The URI of User-defined RESTful APIs is : 
+- `https://localhost:65000/api` + route path for an API
+
+For example, the URI of an API with `path1/v1/abc` path will be
+-  `https://localhost:65000/api/path1/v1/abc`
+
+
+## Access Token for RESTful APIs
+
+### Users
+
+`https://localhost:65000/api` is accessible for a user who gets a session cookie after a successful authentication through `Sign In` on web interface.
+
+### Applications
+
+Applications registered are able to access `https://localhost:65000/api` using an (1-hour lifetime) access token issued when the application is successfuly authenticated by an `application profile` issued during the registration.
+
+Follow the steps below to register an application and download an application profile which plays the credential of the application during the authentication process.
+
+- Register an application at `Settings > Applications`
+- Downlaod and keep an `application profile` issued after a successful application registration as line-firebase server does not keep the private key of the `application profile`. If the `application profile` is lost, you need to register the same application again to issue a new `application profile`.
+
+  ![app shell content](./docs/line-fb-app-add.png) 
+
+## How to add your RESTFul APIs
 
  1. create a route folder (ex `rt-api-xxx-v1`) under `/routes`
     - ex) `/routes/rt-api-xxx-v1`
@@ -187,86 +301,6 @@ $ npm start
 6. Add your common components under /models if any. For example, see `/models/response.js`
 
 
-# How to Edit Application Shell
+## How to Authenticate an App
 
-The below open sources are the key toolkit & library used to build line-firebase.
-
-- [Bootstrap 4.x toolkit](https://getbootstrap.com/) : can be easily replaced with your favorate toolkit.
-- [JQuery 3.x](https://jquery.com/) : codes written using JQuery can be easily replaced with plain JavaScript for performance-critical applications.
-
-You might want to give a different look & feels to Application Shell. Chage files below for this purpose.
-- `/views/main.html` : main page. You might don't need this.
-- `/views/no-page.html` : a page redirected when a wrong uri is given.
-- `/views/invalid-session.html` : a page redirected when a session is expired.
-- `/views/error.html` : a page redirected when an unknown error occurs.
-- `/views/auth/sign-in.html` : Sign In page
-- `/views/auth/sign-up.html` : Sign Up page
-- `/views/service/index.html` : service main page. You might start your main page here.
-- `/views/resources/css/main.css` : css file for `/views/main.html`
-- `/views/resources/css/service.css` : css file for `/views/service/index.html`
-- `/views/resources/scripts/line-firebase.js` : main model script where `window.Line_Firebase` is defined. `window.Line_Firebase` does not contain UI-related control but model-related logics to communicate with route paths in server.
-- `/views/resources/scripts/line-service-ui.js` : control script for `/views/service/index.html`
-- `/views/resources/scripts/line-signin-ui.js` : control script for `/views/auth/sign-in.html`
-- `/views/resources/scripts/line-signup-ui.js` : control script for `/views/auth/sign-up.html`
-
-# How to Add Content 
-
-1. Add a new content page.
- - Copy `/views/template/view-template.html` to `/views/service` folder.
- - Rename the copied `view-template.html` with a meaningful name. For exmaple
-    ```
-    settings.html
-    ```
-2. Add a route path for the new content page created at step 1.
- - Add a new route function file for the new content at `/routes/rt-service`. For example,
-   ```
-   function on(req, res, next) {
-
-        var renderData = {};
-
-        // render & return to client
-        res.render('./service/settings', renderData, function(err, html) {
-            if(err) {
-                res.status(err.status).end();
-            }else {
-                res.set('Content-Type', 'text/html');
-                res.send(html);
-            }
-        });
-    }
-
-    module.exports.on= on;
-   ```
- - Add a route path of the route function for the new content page at `/routes/rt-service/rt-service.js`. For example, 
-    ```
-    let getSettings = require('./get-settings');
-    ...
-    /**
-     * /service/settings 
-     */
-    router.route('/settings')
-          .get(getSettings.on);
-    ```
-
-3. Add a control and event handler for the content page.
- - For example, for `Settings` menu
-    - `dropdown-item` DOM element is added in `/views/service/index.html`
-    ```
-    <a class="dropdown-item" id="line-settings-btn" href="#">Settings</a>
-    ```
-    - an event handler for `id="line-settings-btn"` is added to `/views/resources/scripts/line-service-ui.js`
-    ```
-    eHandler.clickSettingsBtn = function() {
-        $('#line-settings-btn').click((e)=>{
-            e.preventDefault();
-            Line_Firebase.view().getBlock("/service/settings")
-            .then((block)=> {
-                $('#content-main').html(block);
-            })
-            .catch((error)=> {
-                console.log("--- error: ", error);
-            })
-        });
-    }
-    ```
-    The route path added for the new content is passed to the parameter of `Line_Firebase.view().getBlock()`. In this Settings example, `/service/settings` is the route path.
+You 

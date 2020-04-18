@@ -3,7 +3,7 @@
 
 # line-firebase
 
-line-firebase is a NodeJS + Express App shell which can be used as a start point for web applications or microservices with RESTful API interfaces. 
+line-firebase is a NodeJS + Express App shell which can be used as a start point for web applications or microservices with RESTful API interfaces. The features of line-firebase are :
 
 - [`App shell`](https://developers.google.com/web/fundamentals/architecture/app-shell) design architecture 
 

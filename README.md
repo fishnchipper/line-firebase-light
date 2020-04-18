@@ -11,18 +11,18 @@ line-firebase is a NodeJS + Express App shell which can be used as a start point
    ![app shell content](./docs/line-fb-app-shell-content.png)
 
 
-- `OAuth 2.0 and OpenID Connect` enabled
+- `OAuth 2.0` and `OpenID Connect` enabled
 - `Firebase database access` enabled
-- Focus on your own content pages
+- Independent content pages
 - Easy to add secure ([OAuth2.0](https://tools.ietf.org/html/draft-ietf-oauth-access-token-jwt-06)) access token based `RESTful API` with automatic Swagger API document generation
-- Easy to add 3rd-party open-source javascript libraries
+- Easy to add 3rd-party open-source JavaScript libraries
 
 
 
 ## OAuth 2.0 and OpenID Connect
 [Google Firebase Admin SDK & Firebase JavaScript SDK](https://firebase.google.com/docs/auth) is used to acheive OAuth 2.0 and OpenID Connect.
 
-- Firebase server private key is required. Create your own Firebase project and then setup `databaseURL` of the Firebase project and `keyFilename` with the file containing the private key. Below is an part of `index.js` where the setup is required.
+- Firebase server private key is required to enable `OAuth 2.0` and `OpenID Connect`. Create your own Firebase project and then setup `databaseURL` of the Firebase project and `keyFilename` with the file containing the private key. Below is a part of `index.js` where the setup is required.
 
     ```
     const lineFirebaseOptions = {
@@ -35,14 +35,51 @@ line-firebase is a NodeJS + Express App shell which can be used as a start point
 
 ## Firebase database access
 
-If you are going to use the Firebase project you created for `OAuth 2.0 and OpenID Connect` as your backend database, remove `//` from ` lineFirebase.initDBService()` in `index.js`.
+If you are going to use the Firebase project you created for `OAuth 2.0` and `OpenID Connect` as your backend database, simply remove `//` from ` lineFirebase.initDBService()` in `index.js`.
 
 ```
 // init for firebase Database access
 //lineFirebase.initDBService();
 ```
 
+And then create Firebase DBAdapter to add/update/delete documents in backend server-side.
 
+```
+let lineFirbase = require('../../line_modules/line-firebase');
+let dbAdapter = lineFirbase.createDBAdapter();
+```
+
+For example, in `/routes/rt-app/get-app.js` below, `dbAdapter.getDocumentsWithUserUID("applications", user.user_id)` is called to get a list of application linked to `user_id`.
+
+```
+let lineFirbase = require('../../line_modules/line-firebase');
+let dbAdapter = lineFirbase.createDBAdapter();
+
+
+function on(req, res, next) {
+    console.log("++++ api ++++ {get} /app called");
+
+    let user = req.decodedSession;
+
+    dbAdapter.getDocumentsWithUserUID("applications", user.user_id)
+    .then((docs) => {
+        res.json({code: 'api.app.get', message:"app list is successfully returned.", payload:docs});
+    })
+    .catch((e) => {
+        res.status(400).json({code: 'api.app.error', message:'app get error'});
+    })
+}
+
+module.exports.on= on;
+```
+
+### Firebase DBAdapter APIs
+
+- `addDocument(__collection, __doc_id, __doc)`
+- `getDocuments(__collection)`
+- `getDocumentsWithUserUID(__collection, __user_uid)`
+- `getDocumentsWithDocID(__collection, __doc_id)`
+- `deleteDocument(__collection, __doc_id)`
 
 # Where to start
 
@@ -150,7 +187,7 @@ You might want to give a different look & feels to Application Shell. Chage file
 
 ## URI of RESTful API
 
-The URI of User-defined RESTful APIs is : 
+The URI of user-defined RESTful APIs is : 
 - `https://localhost:65000/api` + route path for an API
 
 For example, the URI of an API with `path1/v1/abc` path will be
@@ -161,7 +198,7 @@ For example, the URI of an API with `path1/v1/abc` path will be
 
 ### Users
 
-`https://localhost:65000/api` is accessible for a user who gets a session cookie after a successful authentication through `Sign In` on web interface.
+`https://localhost:65000/api` is accessible for a user who gets a session cookie after a successful authentication through `Sign In` on web interface. Users do not need a separate access token to access RESTful APIs.
 
 ### Applications
 
@@ -170,11 +207,11 @@ Applications registered are able to access `https://localhost:65000/api` using a
 Follow the steps below to register an application and download an application profile which plays the credential of the application during the authentication process.
 
 - Register an application at `Settings > Applications`
-- Downlaod and keep an `application profile` issued after a successful application registration as line-firebase server does not keep the private key of the `application profile`. If the `application profile` is lost, you need to register the same application again to issue a new `application profile`.
+- Downlaod and keep an `application profile` issued after a successful application registration as line-firebase server does not keep the private key of the `application profile`. If the `application profile` is lost, delete the registered application and register the same application again to issue a new `application profile`.
 
   ![app shell content](./docs/line-fb-app-add.png) 
 
-## How to add your RESTFul APIs
+## How to add your RESTful APIs
 
  1. create a route folder (ex `rt-api-xxx-v1`) under `/routes`
     - ex) `/routes/rt-api-xxx-v1`
@@ -301,6 +338,22 @@ Follow the steps below to register an application and download an application pr
 6. Add your common components under /models if any. For example, see `/models/response.js`
 
 
-## How to Authenticate an App
+## How to Authenticate an Application
 
-You 
+An application calls `https://localhost:65000/auth/app` with its application profile issued at `Settings > Applications` when the application is registered.
+
+```
+$ curl -k -H "Content-Type: application/json" https://localhost:65000/auth/app -X PUT -d '{ "app_id": "helloooo-8df0ca92-dfb9-42f5-b525-5a9d8e2a0a42", "private_key": "-----BEGIN ENCRYPTED PRIVATE KEY-----\n ... \n-----END ENCRYPTED PRIVATE KEY-----\n"}'
+```
+
+Once the application gets successfully authenticated, an access token is returned in the below format.
+
+```
+{"code":"auth.app","message":"authentication successful.","payload":ACCESS_TOKEN}
+```
+
+The 1-hour lifetime access token (`ACCESS_TOKEN`) need to be added to HTTP header `Authorization:Bearer ACCESS_TOKEN` whenever RESTful API is called. For example, 
+
+```
+curl -k -H 'Content-Type: application/json' -H 'Authorization:Bearer ACCESS_TOKEN'  -X 'GET' https://localhost:65000/api/xxx/v1
+```

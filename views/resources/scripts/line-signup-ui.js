@@ -55,24 +55,24 @@
             $("#line-signup-btn").click((e) => {
                 e.preventDefault();
                 spinner.spin($(".card-container").get(0));
-                console.log("--- signup btn clicked");
+                //console.log("--- signup btn clicked");
                 Line_Firebase.auth().signUpWithGoogleAuth()
                 .then((_response) => {
                     let response = JSON.parse(_response);
                     spinner.stop();
-                    console.log("--- signup res: ", response.status);
+                    //console.log("--- signup res: ", response.status);
                     if(response.status === "success") {
-                        console.log("--- signup successful");
+                        //console.log("--- signup successful");
                         _redirectToSignIn();
                     }else if(response.status === "error") {
-                        console.log("--- signup fail");
+                        //console.log("--- signup fail");
                         Line_Firebase.redirect('/oops');
                     }else {
                         Line_Firebase.redirect('/oops');
                     }
                 })
                 .catch((error) => {
-                    console.log("--- error: ", error);
+                    //console.log("--- error: ", error);
                     spinner.stop();
                     Line_Firebase.redirect('/oops')
                 }) 
@@ -82,33 +82,33 @@
         function eHandler() {}
         let _responseHelperForGoogleOAuth = function(_response) {
             let response = JSON.parse(_response);
-            console.log("--- result: ", response.status);
+            //console.log("--- result: ", response.status);
             spinner.stop();
             if(response.status == "signUpRequired") {
-                console.log("--- sign up required.");
+                //console.log("--- sign up required.");
                 _signUpHelper();
             }else if(response.status == "signedUp"){
-                console.log("--- successfuly signed");
+                //console.log("--- successfuly signed");
                 Line_Firebase.redirect('/service');
             }else if(response.status == "fail"){
-                console.log("--- error: ", __result);
+                //console.log("--- error: ", __result);
                 Line_Firebase.redirect('/oops');
             }
         }
         let _responseHelper2 = function(_response) {
             let response = JSON.parse(_response);
-            console.log("--- result: ", _response);
+            //console.log("--- result: ", _response);
             spinner.stop();
             if(response.status == "success") {
-                console.log("--- sign up required.");
+                //console.log("--- sign up required.");
                 _signUpHelper();
             }else if(response.status == "error"){
-                console.log("--- error: ", __result);
+                //console.log("--- error: ", __result);
             }
             
         }
         let _errorHelper = function(error) {
-            console.log("--- error: ", error);
+            //console.log("--- error: ", error);
             spinner.stop();
             let code = error.code;
             let message = error.message;
@@ -119,7 +119,7 @@
             signUpGoogleButton.click(function(e) {
                 e.preventDefault();
                 spinner.spin($(".card-container").get(0));
-                console.log("--- google signup clicked");
+                //console.log("--- google signup clicked");
         
                 Line_Firebase.auth().signInWithGoogleAuth()
                 .then(_responseHelperForGoogleOAuth)

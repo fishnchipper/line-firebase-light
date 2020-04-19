@@ -46,21 +46,21 @@
 
         let _responseHelper = function(_response) {
             let response = JSON.parse(_response);
-            console.log("--- result: ", response.status);
+            //console.log("--- result: ", response.status);
             spinner.stop();
             if(response.status == "signUpRequired") {
-                console.log("--- sign up required.");
+                //console.log("--- sign up required.");
                 _signUpHelper();
             }else if(response.status == "signedUp"){
-                console.log("--- successfuly signed");
+                //console.log("--- successfuly signed");
                 Line_Firebase.redirect('/service');
             }else if(response.status == "fail"){
-                console.log("--- error: ", __result);
+                //console.log("--- error: ", __result);
                 //Line_Firebase.redirect('/oops');
             }
         }
         let _errorHelper = function(error) {
-            console.log("--- error: ", error);
+            //console.log("--- error: ", error);
             spinner.stop();
             let err;
             if(error.responseText) {
@@ -77,7 +77,7 @@
             signInGoogleButton.click(function(e) {
                 e.preventDefault();
                 spinner.spin($(".card-container").get(0));
-                console.log("--- google signin clicked");
+                ////console.log("--- google signin clicked");
         
                 Line_Firebase.auth().signInWithGoogleAuth()
                 .then(_responseHelper)

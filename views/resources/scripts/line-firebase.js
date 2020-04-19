@@ -52,14 +52,14 @@
                     firebase.auth().signInWithPopup(provider)
                     .then((result) => {
                         // User is signed in. Get the ID token from firebase
-                        console.log("=== user: ", result.user);
+                        //console.log("=== user: ", result.user);
                         return result.user.getIdToken();
                     }) 
                     .then((idToken) => {
                         // validate ID token and get session returned if okay.
-                        console.log("=== user trying sign-in: ", idToken);
+                        //console.log("=== user trying sign-in: ", idToken);
                         const csrfToken = Cookies.get('csrfToken');
-                        console.log("=== csrfToken: ", csrfToken);
+                        //console.log("=== csrfToken: ", csrfToken);
                         
                         let obj = { idToken: idToken,  csrfToken:csrfToken};
                         _callApiPromise("PUT", "/auth/signin", obj, _resolve, _reject)
@@ -80,21 +80,21 @@
                     firebase.auth().signInWithEmailAndPassword(_credential.email, _credential.password)
                     .then((result) => {
                         // User is signed in. Get the ID token from firebase
-                        console.log("=== user: ", result.user);
+                        //console.log("=== user: ", result.user);
                         _user = result.user;
                         return result.user.getIdToken();
                     }) 
                     .then((idToken) => {
                         // validate ID token and get session returned if okay.
-                        console.log("=== user trying sign-in: ", idToken);
+                        //console.log("=== user trying sign-in: ", idToken);
                         const csrfToken = Cookies.get('csrfToken');
-                        console.log("=== csrfToken: ", csrfToken);
+                        //console.log("=== csrfToken: ", csrfToken);
                         
                         let obj = { idToken: idToken,  csrfToken:csrfToken};
                         _callApiPromise("PUT", "/auth/signin", obj, _resolve, _reject)
                     })
                     .catch((err) => {
-                        console.log("=== err: ", err);
+                        //console.log("=== err: ", err);
                         _reject(err);
                     });
                 });
@@ -105,7 +105,7 @@
                     firebase.auth().createUserWithEmailAndPassword(_credential.email, _credential.password)
                     .then((result) => {
                         // User is signed in. Get the ID token from firebase
-                        console.log("=== user: ", result.user);
+                        //console.log("=== user: ", result.user);
                         _user = result.user;
                         let obj = { userId: result.user.uid};
                         _callApiPromise("POST", "/auth/signup", obj, _resolve, _reject);
@@ -120,10 +120,10 @@
             method.sendEmailVerification = function() {
                 return new Promise((_resolve, _reject)=> {
                     firebase.auth().onAuthStateChanged(function(user) {
-                        console.log("==== user: ", user);
+                        //console.log("==== user: ", user);
                         if (user) {
                             // User is signed in.
-                            console.log("==== user: ", user);
+                            //console.log("==== user: ", user);
                             user.sendEmailVerification().then(_resolve).catch(_reject);
                         } else {
                             // No user is signed in.

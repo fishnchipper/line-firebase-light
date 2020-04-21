@@ -3,7 +3,60 @@
 
 # line-firebase
 
-line-firebase is a NodeJS + Express App shell which can be used as a start point for web applications or microservices with RESTful API interfaces. The features of line-firebase are :
+line-firebase is a NodeJS + Express App shell which can be used as a start point for web applications or microservices with RESTful API interfaces. 
+
+
+## Docker Image
+
+The latest Docker image is downloaded from
+- https://hub.docker.com/repository/docker/fishnchipper/line-firebase 
+
+### How to run Docker image
+
+- Pull a Docker image from Docker Hub
+```
+$ docker pull fishnchipper/line-firebase:v0.1.1
+```
+- Run the image by mounting the two Firebase project configuration files below into the image:
+  - a Firebase serverkey file for back-end: the filename must be `firebase-serverkey.js`
+  ```
+  Example>
+  {
+    "type": "service_account",
+    "project_id": "{PROJECT_NAME}",
+    "private_key_id": "f35d7e3d3fff3e4a278d031000069c3fedb1d19f",
+    "private_key": "-----BEGIN PRIVATE KEY-----\n\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-o2cuu@{PROJECT_NAME}.iam.gserviceaccount.com",
+    "client_id": "110090857290000011817",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-o2cuu%40{PROJECT_NAME}.iam.gserviceaccount.com"
+  }
+  ```
+  - a Firebase configuration file for web: the filename must be `firebaseconfig.js`
+  ```
+  Example>
+  const firebaseConfig = {
+        apiKey: "AIzaSyAGnmtnEaxle1QPbcJsdfsdfksqDJ9tr93PmY",
+        authDomain: "{PROJECT_NAME}.firebaseapp.com",
+        databaseURL: "https://{PROJECT_NAME}.firebaseio.com",
+        projectId: "{PROJECT_NAME}",
+        storageBucket: "{PROJECT_NAME}.appspot.com",
+        messagingSenderId: "5682222724683",
+        appId: "1:568200004683:web:52f31000062c358a9f0d8e",
+        measurementId: "G-T0000N5KBV"
+    };
+  ```
+```
+Example>
+
+$ docker run -p 65000:65000 -v /Absolute Path To/firebase-serverkey.json:/src/environment/firebase-serverkey.json:ro -v /Absolute Path To/firebaseconfig.js:/src/views/resources/scripts/firebaseconfig.js:ro fishnchipper/line-firebase:v0.1.1
+```
+
+## Features
+
+The features of line-firebase are :
 
 - [`App shell`](https://developers.google.com/web/fundamentals/architecture/app-shell) design architecture 
 

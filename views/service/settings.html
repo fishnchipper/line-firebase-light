@@ -114,7 +114,7 @@
             Line_Firebase.app().list()
                 .then((list) => {
                     console.log("--- all list: ", list);
-                    if(list.payload != "none") {
+                    if(list.payload != "nil") {
                         appList = list.payload;
                     }
                     cb();

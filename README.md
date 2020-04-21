@@ -1,4 +1,4 @@
-![version](https://badgen.net/badge/version/v0.1.1/orange)  [![Build status](https://ci.appveyor.com/api/projects/status/81q9dibj57crjbq1?svg=true)](https://ci.appveyor.com/project/gam4it/line-firebase)
+![version](https://badgen.net/badge/version/v0.1.2/orange)  [![Build status](https://ci.appveyor.com/api/projects/status/81q9dibj57crjbq1?svg=true)](https://ci.appveyor.com/project/gam4it/line-firebase)
 
 
 # line-firebase
@@ -15,7 +15,7 @@ The latest Docker image is downloaded from
 
 - Pull a Docker image from Docker Hub
 ```
-$ docker pull fishnchipper/line-firebase:v0.1.1
+$ docker pull fishnchipper/line-firebase:version
 ```
 - Run the image by mounting the two Firebase project configuration files below into the image:
   - a Firebase serverkey file for back-end: the filename must be `firebase-serverkey.js`

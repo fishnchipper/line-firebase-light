@@ -1,0 +1,10 @@
+# ignore folders
+docs
+node_modules
+
+# ignore files
+environment/firebase-serverkey.json
+package-lock.json
+npm-debug.log
+LICENSE
+README.md

@@ -168,6 +168,30 @@
             }
             return method;
         }
+        api.api = function() {
+            function method() {}
+            method.get = function(_path, _payload) {
+                return new Promise((_resolve, _reject) => {
+                    _callApiPromise("GET", _path, _payload, _resolve, _reject);
+                });
+            }
+            method.set = function(_path, _payload) {
+                return new Promise((_resolve, _reject) => {
+                    _callApiPromise("PUT", _path, _payload, _resolve, _reject);
+                });
+            }
+            method.add = function(_path, _payload) {
+                return new Promise((_resolve, _reject) => {
+                    _callApiPromise("PUSH", _path, _payload, _resolve, _reject);
+                });
+            }
+            method.delete = function(_path, _payload) {
+                return new Promise((_resolve, _reject) => {
+                    _callApiPromise("DELETE", _path, _payload, _resolve, _reject);
+                });
+            }
+            return method;
+        }
         api.signOut = function() {
             return new Promise((_resolve, _reject) => {
                 _callApiPromise("DELETE", "/auth/signout", {}, _resolve, _reject);

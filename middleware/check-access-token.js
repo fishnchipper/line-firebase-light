@@ -1,5 +1,6 @@
 
 const jwt = require('jsonwebtoken');
+const checkSessionCookie = require('./check-session');
 
 
 var error = {};
@@ -21,10 +22,10 @@ var accessToken = {
           if(err) {
             console.log("   error: ", err);
             if(err.name == 'TokenExpiredError') {
-              error.code = "session.token.fail";
+              error.code = "session.token.fail.invalid";
               error.message = "invalid access token:expired";
             }else {
-              error.code = "session.token.fail";
+              error.code = "session.token.fail.invalid";
               error.message = "invalid access token";
             }
             
@@ -55,12 +56,12 @@ function _checkAccessToken(_headers) {
         accessToken.token = token;
         resolve(accessToken);
       }else {
-        error.code = "session.token.fail";
+        error.code = "session.token.fail.none";
         error.message = "no access token found";
         reject(error);
       }
     }else {
-      error.code = "session.token.fail";
+      error.code = "session.token.fail.none";
       error.message = "no access token found";
       reject(error);
     }
@@ -81,7 +82,12 @@ function on(req, res, next) {
   })
   .catch((e)=>{
     console.log("   error: ", e);
-    res.status(400).json({code: e.code, message:e.message});
+    // to access token. try check session cookie
+    if(e.code === 'session.token.fail.none') {
+      checkSessionCookie.verify(req,res,next);
+    }else {
+      res.status(400).json({code: e.code, message:e.message});
+    }
   });
 };
 

@@ -10,15 +10,15 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 var defaults = {
-    lines: 12,
-    length: 7,
+    lines: 8,
+    length: 10,
     width: 5,
     radius: 10,
     scale: 1.0,
     corners: 1,
     color: '#000',
     fadeColor: 'transparent',
-    animation: 'spinner-line-fade-default',
+    animation: 'spinner-line-shrink',
     rotate: 0,
     direction: 1,
     speed: 1,

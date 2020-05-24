@@ -5,7 +5,7 @@
  */
 (function(_initUI, _eHanlder) {
 
-    _initUI().spinner();
+    _initUI().init();
     let eHandler = _eHanlder();
 
     // init event handlers
@@ -18,10 +18,26 @@
 })(function() { // initialization
     function main() {
         function init() {}
+        init.init = function() {
 
-        // init spinner
-        init.spinner = function() {
             window.Line_Service_Spinner = new Spinner();
+
+            // custom init steps go here ////////////
+            //
+            console.log("--- service init ");
+
+            /*
+            window.__ObjList__ = new Map();
+            Line_Firebase.view().getBlock("/service/dashboard")
+            .then((block)=> {
+                $('#content-main').html(block);
+            })
+            .catch((error)=> {
+                //console.log("--- error: ", error);
+            })
+            */
+            //
+            //////////////////////////////////////////
         }
         return init;
     }

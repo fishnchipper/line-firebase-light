@@ -169,6 +169,40 @@ let FirebaseDBHelper = (function() {
 
           })
   }
+  FirebaseDBHelper.prototype.getDocumentsWithConditions = function(__collection, ...conditions) {
+
+    var query = ___firestore___.collection(__collection);
+
+    // check validity of conditions and make where statement
+    if(conditions.length > 0 && conditions.length % 3 == 0) {
+      const elements = conditions;
+      const elementsLoop = conditions.length / 3;
+      for(var i=0; i < elementsLoop ; i++ ) {
+        query = query.where(elements.shift(), elements.shift(), elements.shift());
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+
+            var docs = [];
+            // query data in firebase
+            query.get().then(querySnapshot => {
+                if (querySnapshot.empty) {
+                    // do nothing
+                }else {
+                    querySnapshot.forEach(doc => {
+                      docs.push(doc.data());
+                    });           
+                              
+                }
+                resolve(docs); 
+            })
+            .catch(err => {
+              reject("fail - firebase query: ", err);
+            });
+
+          })
+  }
   FirebaseDBHelper.prototype.getDocumentsWithUserUID = function(__collection, __user_uid) {
 
     var query = ___firestore___.collection(__collection).where('__userUID','==', __user_uid);

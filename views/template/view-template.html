@@ -61,8 +61,28 @@
 <script type="text/javascript">
     (function() { 
         let hello = Line_Firebase.hello();
-        Mustache.parse($('#tmp-app-item').html(), [ '{%', '%}' ] );
+        Mustache.tags = [ '{%', '%}' ];
 
+        // 
+        // 
+        function _changeDom(_destId, _template, _data) {
+            $(`#${_destId}`).html(Mustache.render($(`#${_template}`).html(), _data));
+        }
+        function _nullDom(_destId) {
+            $(`#${_destId}`).html("");
+        }
+        function _chnageContent(_contentPath) {
+            Line_Service_Spinner.spin($(".container-fluid").get(0));
+            Line_Firebase.view().getBlock(_contentPath)
+                .then((block)=> {
+                    Line_Service_Spinner.stop();
+                    $('#service-content').parent().html(block);
+                })
+                .catch((error)=> {
+                    //console.log("--- error: ", error);
+                    Line_Service_Spinner.stop();
+                })
+        }
 
         // control codes go below
         //

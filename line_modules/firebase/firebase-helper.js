@@ -144,6 +144,12 @@ let FirebaseDBHelper = (function() {
 
           })
   }
+  /**
+   * get a document to firebase
+   * 
+   * @param {string} __collection collection to add doc
+   * @return {Promise<user>} A promise fulfilled with user document; otherwise, a rejected promise
+   */
   FirebaseDBHelper.prototype.getDocuments = function(__collection) {
 
     var query = ___firestore___.collection(__collection);
@@ -169,6 +175,13 @@ let FirebaseDBHelper = (function() {
 
           })
   }
+  /**
+   * get a document to firebase
+   * 
+   * @param {string} __collection collection to add doc
+   * @param {strings} __conditions firebase condition query strings
+   * @return {Promise<user>} A promise fulfilled with user document; otherwise, a rejected promise
+   */
   FirebaseDBHelper.prototype.getDocumentsWithConditions = function(__collection, ...conditions) {
 
     var query = ___firestore___.collection(__collection);
@@ -203,6 +216,13 @@ let FirebaseDBHelper = (function() {
 
           })
   }
+  /**
+   * get a document to firebase
+   * 
+   * @param {string} __collection collection to add doc
+   * @param {string} __user_uid user id as a condition
+   * @return {Promise<user>} A promise fulfilled with user document; otherwise, a rejected promise
+   */
   FirebaseDBHelper.prototype.getDocumentsWithUserUID = function(__collection, __user_uid) {
 
     var query = ___firestore___.collection(__collection).where('__userUID','==', __user_uid);
@@ -228,6 +248,13 @@ let FirebaseDBHelper = (function() {
 
           })
   }
+  /**
+   * get a document to firebase
+   * 
+   * @param {string} __collection collection to add doc
+   * @param {string} __doc_id doc id as a condition
+   * @return {Promise<user>} A promise fulfilled with user document; otherwise, a rejected promise
+   */
   FirebaseDBHelper.prototype.getDocumentsWithDocID = function(__collection, __doc_id) {
 
     var query = ___firestore___.collection(__collection).where('__id','==', __doc_id);
@@ -253,6 +280,13 @@ let FirebaseDBHelper = (function() {
 
           })
   }
+  /**
+   * delete a document to firebase
+   * 
+   * @param {string} __collection collection to add doc
+   * @param {string} __doc_id doc id as a condition
+   * @return {Promise<user>} A promise fulfilled with user document; otherwise, a rejected promise
+   */
   FirebaseDBHelper.prototype.deleteDocument = function(__collection, __doc_id) {
 
     var targetDoc = __collection + "/" + __doc_id;

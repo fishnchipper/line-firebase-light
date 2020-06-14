@@ -182,7 +182,7 @@
             }
             method.add = function(_path, _payload) {
                 return new Promise((_resolve, _reject) => {
-                    _callApiPromise("PUSH", _path, _payload, _resolve, _reject);
+                    _callApiPromise("POST", _path, _payload, _resolve, _reject);
                 });
             }
             method.delete = function(_path, _payload) {

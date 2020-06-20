@@ -145,6 +145,37 @@ let FirebaseDBHelper = (function() {
           })
   }
   /**
+   * add multiple document to firebase
+   * 
+   * @param {string} __collection collection to add doc
+   * @param {array} __docs array of doc to add
+   * @return {Promise<user>} A promise fulfilled with user document; otherwise, a rejected promise
+   */
+  FirebaseDBHelper.prototype.addMultiDocuments = function(__collection, __docs) {
+
+    var batch = ___firestore___.batch();
+    
+
+    return new Promise((resolve, reject) => {
+
+              if (!Array.isArray(__docs)) reject("fail - wrong param type: __docs must be array");
+
+              // prepare batch set
+              __docs.forEach((doc)=>{
+                var docRef = ___firestore___.collection(__collection).doc();
+                batch.set(docRef, doc);
+              });
+              // batch commit
+              batch.commit().then(() => {
+                resolve("success");                 
+              })
+              .catch(err => {
+                reject("fail - firebase set: ", err);
+              });
+
+          })
+  }
+  /**
    * get a document to firebase
    * 
    * @param {string} __collection collection to add doc

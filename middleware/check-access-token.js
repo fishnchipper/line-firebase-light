@@ -11,7 +11,7 @@ var accessToken = {
 
       const kprofile = ___pkiKeyPairsForAccessKeyGen___.get('kprofile'); 
       //var decoded = jwt.decode(accessToken.token);
-      //console.log("   decoded access token: \n", decoded);
+      //console.log("   kprofile: \n", kprofile);
 
       // verifying the OAuth2.0 access token issued 
       jwt.verify(
@@ -32,7 +32,7 @@ var accessToken = {
             reject(error);
           }else {
             console.log("   valid access token: \n", decoded);
-            resolve("valid");
+            resolve(decoded);
           }
         }
       );
@@ -76,8 +76,9 @@ function on(req, res, next) {
   .then((accessToken) => {
     return accessToken.verify();
   })
-  .then((result)=> {
+  .then((decoded)=> {
     // valid access token. go to next step
+    req.decodedSession = decoded;
     next();
   })
   .catch((e)=>{

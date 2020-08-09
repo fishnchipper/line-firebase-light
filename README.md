@@ -1,4 +1,4 @@
-![version](https://badgen.net/badge/version/v0.1.3/orange)  [![Build status](https://ci.appveyor.com/api/projects/status/81q9dibj57crjbq1?svg=true)](https://ci.appveyor.com/project/gam4it/line-firebase)
+![version](https://badgen.net/badge/version/v0.1.4/orange)  [![Build status](https://ci.appveyor.com/api/projects/status/81q9dibj57crjbq1?svg=true)](https://ci.appveyor.com/project/gam4it/line-firebase)
 
 
 # line-firebase

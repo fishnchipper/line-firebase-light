@@ -1,14 +1,15 @@
 /**
  * App
  */
-let https = require('https'),
-    fs = require('fs'),
-    express = require('express'),
-    bodyParser = require('body-parser'),
-    helmet = require('helmet'),
-    path = require('path'),
+let bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
-    mustacheExpress = require('mustache-express');
+    cors = require('cors'),
+    express = require('express'),
+    fs = require('fs'),
+    helmet = require('helmet'),
+    https = require('https'),
+    mustacheExpress = require('mustache-express'),
+    path = require('path');
 
 /**
  * Firebase service setup
@@ -21,7 +22,7 @@ if (!fs.existsSync('./environment/firebase-serverkey.json')) {
 const lineFirebase = require('./line_modules/line-firebase');
 const lineFirebaseOptions = {
   // firebase database url
-  databaseURL: "https://line-7e593.firebaseio.com",
+  databaseURL: "https://*.firebaseio.com",
   // firebase Admin SDK private key 
   keyFilename: './environment/firebase-serverkey.json'
 };
@@ -52,11 +53,15 @@ const APPNAME = process.env.npm_package_name;
 const PORT = process.env.npm_package_config_port;
 const VERSION = process.env.npm_package_version;
 
-
-
+// log date-time of request
+app.use(function (req, res, next) {
+  req.requestDateTime = new Date().toISOString();
+  next();
+});
 
 // for security purpose
 app.use(helmet());
+app.use(cors());
 
 app.use(bodyParser.json());
 

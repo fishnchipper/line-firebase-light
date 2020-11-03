@@ -65,7 +65,7 @@
                         _callApiPromise("PUT", "/auth/signin", obj, _resolve, _reject)
                     })
                     .catch((err) => {
-                        reject(err);
+                        _reject(err);
                     });       
                 });
             }

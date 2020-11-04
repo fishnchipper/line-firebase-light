@@ -7,7 +7,6 @@ let bodyParser = require('body-parser'),
     express = require('express'),
     fs = require('fs'),
     helmet = require('helmet'),
-    https = require('https'),
     mustacheExpress = require('mustache-express'),
     path = require('path');
 
@@ -146,10 +145,6 @@ app.use(routeMain.noResource);
 /**
  * run server
  */
-https.createServer({
-  key: fs.readFileSync(__dirname + '/environment/server.key'),
-  cert: fs.readFileSync(__dirname + '/environment/server.cert')
-}, app)
-.listen(PORT, function () {
-  console.log(`==> ${APPNAME} - (v${VERSION}) https://localhost:${PORT}`);
+app.listen(PORT, function () {
+  console.log(`==> ${APPNAME} - (v${VERSION}) http://localhost:${PORT}`);
 });

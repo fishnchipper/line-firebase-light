@@ -1,6 +1,5 @@
 
 const jwt = require('jsonwebtoken');
-const checkSessionCookie = require('./check-session');
 
 
 var error = {};
@@ -83,12 +82,8 @@ function on(req, res, next) {
   })
   .catch((e)=>{
     console.log("   error: ", e);
-    // to access token. try check session cookie
-    if(e.code === 'session.token.fail.none') {
-      checkSessionCookie.verify(req,res,next);
-    }else {
-      res.status(400).json({code: e.code, message:e.message});
-    }
+    //res.status(400).json({'msg':'ale-ex.'});
+    res.status(400).json({code: e.code, message:e.message});
   });
 };
 

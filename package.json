@@ -1,12 +1,12 @@
 {
-  "name": "line-firebase",
-  "version": "0.1.5",
+  "name": "openrpki-roa-handler",
+  "version": "0.1.0",
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fishnchipper/line-firebase"
+    "url": "https://github.com/fishnchipper/openrpki-roa-handler"
   },
-  "description": "A NodeJS-Express App Shell with Firebase Authentication",
+  "description": "ROA handler",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -19,7 +19,7 @@
     "name": "Seung Lee",
     "email": "seung.lee@fishnchipper.io"
   },
-  "license": "MIT",
+  "license": "",
   "dependencies": {
     "@google-cloud/firestore": "^4.4.0",
     "bluebird": "^3.7.2",

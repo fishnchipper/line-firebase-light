@@ -48,11 +48,7 @@ const APPNAME = process.env.npm_package_name;
 const PORT = process.env.npm_package_config_port;
 const VERSION = process.env.npm_package_version;
 
-// log date-time of request
-app.use(function (req, res, next) {
-  req.requestDateTime = new Date().toISOString();
-  next();
-});
+
 
 // for security purpose
 app.use(helmet());
@@ -70,8 +66,8 @@ lineInit.generateAKeyPairsForAccessKey();
 
 // logging
 app.use(function (req, res, next) {
-  req.requestTime = new Date().toISOString();
-  console.log('[%s] api call from %s : (%s) %s', req.requestTime, req.ip, req.method, req.originalUrl)
+  req.requestDateTime = new Date().toISOString();
+  console.log('[%s] api call from %s : (%s) %s', req.requestDateTime, req.ip, req.method, req.originalUrl)
   next()
 });
 

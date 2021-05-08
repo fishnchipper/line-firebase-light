@@ -1,8 +1,8 @@
 
 const crypto = require('crypto');
 var jwt = require('jsonwebtoken');
-let lineFirbase = require('../../line_modules/line-firebase');
-let dbAdapter = lineFirbase.createDBAdapter();
+let Line = require('@fishnchipper/line-firebase-admin');
+let dbAdapter = Line.firebase.createDBAdapter();
 var uuid = require('uuid-random');
 
 

@@ -1,12 +1,12 @@
 {
-  "name": "openrpki-roa-handler",
+  "name": "line-firebase-light",
   "version": "0.1.0",
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fishnchipper/openrpki-roa-handler"
+    "url": "https://github.com/fishnchipper/line-firebase-light"
   },
-  "description": "ROA handler",
+  "description": "line-firebase-light",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -21,6 +21,7 @@
   },
   "license": "",
   "dependencies": {
+    "@fishnchipper/line-firebase-admin": "^0.1.1",
     "@google-cloud/firestore": "^4.4.0",
     "bluebird": "^3.7.2",
     "cookie-parser": "^1.4.5",

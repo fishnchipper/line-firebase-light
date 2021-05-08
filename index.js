@@ -17,18 +17,18 @@ if (!fs.existsSync('./environment/firebase-serverkey.json')) {
   process.exitCode = 1;
   process.exit();
 }
-const lineFirebase = require('./line_modules/line-firebase');
+const Line = require('@fishnchipper/line-firebase-admin');
 const lineFirebaseOptions = {
   // firebase database url
   databaseURL: "https://rpki-8f20c.firebaseio.com",
   // firebase Admin SDK private key 
   keyFilename: './environment/firebase-serverkey.json'
 };
-lineFirebase.setup(lineFirebaseOptions);
+Line.firebase.setup(lineFirebaseOptions);
 // init for firebase Authentication access
-lineFirebase.initAuthService();
+Line.firebase.initAuthService();
 // init for firebase Database access
-lineFirebase.initDBService();
+Line.firebase.initDBService();
 
 
 /**
@@ -61,8 +61,7 @@ app.use(cookieParser());
 // [OTHER METHODS NEED TO BE CONSIDERED] plays like a cache for keeping appProfiles queried by /auth/app
 global.___appProfileList___ = new Map(); 
 // [OTHER METHODS NEED TO BE CONSIDERED] PKI asyncronous key pairs used for OAuth2.0 access key generation
-const lineInit = require('./line_modules/line-init');
-lineInit.generateAKeyPairsForAccessKey();
+Line.key.generateAKeyPairsForAccessKey();
 
 // logging
 app.use(function (req, res, next) {
